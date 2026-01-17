@@ -19,7 +19,7 @@ export default function EligibilityCard() {
         <div>
             {/* Title Section */}
             <div className="mb-4">
-                <h1 className="text-4xl font-serif text-[#1a2e4a]">My Vote</h1>
+                <h1 className="text-4xl font-croissant text-[#1a2e4a]">My Vote</h1>
                 <div className="water-fill-container">
                     <p className="water-fill-text text-green-700 font-bold text-xl italic">My Future...</p>
                 </div>
