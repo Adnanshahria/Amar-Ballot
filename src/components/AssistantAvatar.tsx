@@ -2,7 +2,7 @@ import preronaImg from '../assets/prerona.png';
 
 export default function AssistantAvatar() {
     return (
-        <div className="flex flex-col items-center font-inter">
+        <div className="flex flex-col items-center">
             <p className="text-gray-600 mb-2 text-lg">
                 <span className="italic text-2xl">Hello,</span> I'm Prerona
             </p>

@@ -15,7 +15,7 @@ export default function Header() {
     return (
         <header className="sticky top-0 z-50 px-2 pt-1 md:px-4 md:pt-2">
             {/* Header Container with boxy shape */}
-            <div className="bg-gradient-to-r from-green-50 to-green-100 shadow-md rounded-xl md:rounded-2xl border border-green-200 font-inter">
+            <div className="bg-gradient-to-r from-green-50 to-green-100 shadow-md rounded-xl md:rounded-2xl border border-green-200">
                 <div className="w-full px-2 sm:px-4 lg:px-8">
                     <div className="flex justify-between items-center h-12 md:h-16">
                         {/* Logo - Smaller on mobile */}

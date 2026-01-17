@@ -9,7 +9,7 @@ const quickLinks = [
 
 export default function QuickLinks() {
     return (
-        <div className="flex flex-col gap-2 font-inter">
+        <div className="flex flex-col gap-2">
             {/* Ready to Vote Badge - Simple pill shape with shadow */}
             <div className="bg-white text-green-600 px-8 py-3 rounded-full text-center font-bold text-xl shadow-lg border border-gray-100 italic">
                 Ready to vote!
