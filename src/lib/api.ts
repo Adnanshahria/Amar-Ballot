@@ -20,7 +20,8 @@ export async function getCandidates(): Promise<Candidate[]> {
             status: row.status as 'clean' | 'pending',
             division: row.division as string,
             district: row.district as string,
-            area: row.area as string
+            area: row.area as string,
+            alliance: row.alliance as string
         }));
     } catch (error) {
         console.error('Error fetching candidates:', error);
@@ -142,12 +143,12 @@ export async function getDashboardStats() {
 }
 
 export async function addCandidate(candidateData: any) {
-    const { name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area } = candidateData;
+    const { name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area, alliance } = candidateData;
     try {
         await db.execute({
-            sql: `INSERT INTO candidates (name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            args: [name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area]
+            sql: `INSERT INTO candidates (name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area, alliance) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: [name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area, alliance]
         });
         return { success: true };
     } catch (error) {

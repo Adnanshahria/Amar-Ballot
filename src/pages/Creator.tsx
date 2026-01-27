@@ -12,7 +12,7 @@ export default function Creator() {
                     Original Creator
                 </h1>
                 <p className="text-lg text-gray-700 font-medium">
-                    The original creator of this page is <span className="text-green-700 font-bold">Mohammed Adnan Shahria</span>.
+                    The original creator of this website is <span className="text-green-700 font-bold">Mohammed Adnan Shahria</span>.
                 </p>
             </div>
         </main>

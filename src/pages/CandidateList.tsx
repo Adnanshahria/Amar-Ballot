@@ -29,7 +29,10 @@ export default function CandidateList() {
             getCandidates().then(data => {
                 // Filter by area (in real app, assume API filters or we filter here)
                 // For now, fetching ALL and filtering client side for demo
-                const filtered = data.filter(c => c.area === selectedArea);
+                const filtered = data.filter(c =>
+                    c.area === selectedArea &&
+                    (selectedAlliance ? c.alliance === selectedAlliance : true)
+                );
                 setCandidates(filtered);
                 setLoading(false);
             });

@@ -15,6 +15,7 @@ export interface Candidate {
     division: string;
     district: string;
     area: string;
+    alliance?: string;
     matchPercentage?: number; // Calculated on client
 }
 

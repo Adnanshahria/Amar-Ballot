@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS candidates (
     division TEXT NOT NULL,
     district TEXT NOT NULL,
     area TEXT NOT NULL,
+    alliance TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
