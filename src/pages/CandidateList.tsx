@@ -5,32 +5,17 @@ import { getCandidates } from '../lib/api';
 import type { Candidate } from '../lib/types';
 
 
-const divisions = ['Dhaka', 'Rajshahi', 'Chittagong', 'Barishal', 'Khulna', 'Sylhet', 'Mymensingh', 'Rangpur'];
+import { SEAT_SYSTEM } from '../lib/seats';
 
-const districtsByDivision: Record<string, string[]> = {
-    'Dhaka': ['Faridpur', 'Narayanganj', 'Gazipur', 'Manikganj'],
-    'Rajshahi': ['Rajshahi', 'Bogura', 'Pabna', 'Natore'],
-    'Chittagong': ['Chittagong', 'Comilla', 'Feni', 'Cox\'s Bazar'],
-    'Barishal': ['Barishal', 'Patuakhali', 'Bhola', 'Jhalokathi'],
-    'Khulna': ['Khulna', 'Jessore', 'Satkhira', 'Bagerhat'],
-    'Sylhet': ['Sylhet', 'Moulvibazar', 'Habiganj', 'Sunamganj'],
-    'Mymensingh': ['Mymensingh', 'Jamalpur', 'Netrokona', 'Sherpur'],
-    'Rangpur': ['Rangpur', 'Dinajpur', 'Kurigram', 'Gaibandha'],
-};
-
-const areasByDistrict: Record<string, string[]> = {
-    'Faridpur': ['Faridpur-1', 'Faridpur-2', 'Faridpur-3'],
-    'Narayanganj': ['Narayanganj-1', 'Narayanganj-2'],
-    'Gazipur': ['Gazipur-1', 'Gazipur-2', 'Gazipur-3', 'Gazipur-4'],
-    // Add more as needed, defaulting to generic
-};
+// Helper to get divisions from the seat system
+const divisions = SEAT_SYSTEM.data.map(d => d.division);
 
 export default function CandidateList() {
     const { language } = useLanguage(); // Use in future for static labels
 
-    const [selectedDivision, setSelectedDivision] = useState<string | null>('Dhaka');
-    const [selectedDistrict, setSelectedDistrict] = useState<string | null>('Faridpur');
-    const [selectedArea, setSelectedArea] = useState<string | null>('Faridpur-3');
+    const [selectedDivision, setSelectedDivision] = useState<string | null>('ঢাকা');
+    const [selectedDistrict, setSelectedDistrict] = useState<string | null>('ফরিদপুর');
+    const [selectedArea, setSelectedArea] = useState<string | null>('ফরিদপুর-৩');
     const [showResults, setShowResults] = useState(false);
 
     const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -49,8 +34,15 @@ export default function CandidateList() {
         }
     }, [showResults, selectedArea]);
 
-    const districts = selectedDivision ? districtsByDivision[selectedDivision] || [] : [];
-    const areas = selectedDistrict ? areasByDistrict[selectedDistrict] || [`${selectedDistrict}-1`, `${selectedDistrict}-2`, `${selectedDistrict}-3`] : [];
+    const districts = selectedDivision
+        ? SEAT_SYSTEM.data.find(d => d.division === selectedDivision)?.districts.map(d => d.district_name) || []
+        : [];
+
+    const areas = selectedDistrict && selectedDivision
+        ? SEAT_SYSTEM.data.find(d => d.division === selectedDivision)
+            ?.districts.find(d => d.district_name === selectedDistrict)
+            ?.constituencies || []
+        : [];
 
     const handleDivisionClick = (division: string) => {
         setSelectedDivision(division);
