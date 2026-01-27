@@ -1,6 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import preronaImg from '../assets/prerona.png';
 
 export default function AssistantAvatar() {
+    const navigate = useNavigate();
+
+    const handleChatClick = () => {
+        navigate('/chat');
+    };
+
     return (
         <div className="flex flex-col items-center">
             <p className="text-gray-600 mb-2 text-lg">
@@ -20,7 +27,10 @@ export default function AssistantAvatar() {
                 <span className="font-semibold">a responsible voter</span>
             </p>
 
-            <button className="mt-2 text-green-700 hover:text-green-800 font-medium underline underline-offset-2 transition-colors">
+            <button
+                onClick={handleChatClick}
+                className="mt-2 text-green-700 hover:text-green-800 font-medium underline underline-offset-2 transition-colors hover:scale-105"
+            >
                 Click Here
             </button>
         </div>

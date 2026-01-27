@@ -9,6 +9,7 @@ import VideoTutorials from './pages/VideoTutorials';
 import AboutUs from './pages/AboutUs';
 import Services from './pages/Services';
 import ContactUs from './pages/ContactUs';
+import Chat from './pages/Chat';
 import Placeholder from './pages/Placeholder';
 import NavigationMap from './components/NavigationMap';
 import './index.css';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="*" element={<Placeholder />} />
         </Routes>
 
