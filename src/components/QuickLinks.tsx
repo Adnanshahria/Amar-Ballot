@@ -1,13 +1,17 @@
 const quickLinks = [
-    { label: 'Election Updates' },
-    { label: 'Your Vote Center' },
-    { label: 'Course' },
-    { label: 'Compare Candidates' },
-    { label: 'Rumor Check' },
-    { label: 'Video Tutorials' },
+    { label: 'Election Updates', path: '#' },
+    { label: 'Your Vote Center', path: '/vote-center' },
+    { label: 'Course', path: '#' },
+    { label: 'Compare Candidates', path: '#' },
+    { label: 'Rumor Check', path: '#' },
+    { label: 'Video Tutorials', path: '#' },
 ];
 
+import { useNavigate } from 'react-router-dom';
+
 export default function QuickLinks() {
+    const navigate = useNavigate();
+
     return (
         <div className="flex flex-col gap-2">
             {/* Ready to Vote Badge - Simple pill shape with shadow */}
@@ -20,6 +24,7 @@ export default function QuickLinks() {
                 {quickLinks.map((link) => (
                     <button
                         key={link.label}
+                        onClick={() => link.path !== '#' && navigate(link.path)}
                         className="w-full bg-gradient-to-r from-gray-50 to-white hover:from-green-50 hover:to-white px-6 py-3 rounded-full transition-all border border-gray-200 text-gray-600 font-medium text-center shadow-sm"
                     >
                         {link.label}
