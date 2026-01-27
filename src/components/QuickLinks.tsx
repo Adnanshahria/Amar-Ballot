@@ -1,10 +1,10 @@
 const quickLinks = [
-    { label: 'Election Updates', path: '#' },
+    { label: 'Election Updates', path: '/election-updates' },
     { label: 'Your Vote Center', path: '/vote-center' },
-    { label: 'Course', path: '#' },
-    { label: 'Compare Candidates', path: '#' },
-    { label: 'Rumor Check', path: '#' },
-    { label: 'Video Tutorials', path: '#' },
+    { label: 'Course', path: '/course' },
+    { label: 'Compare Candidates', path: '/compare' },
+    { label: 'Rumor Check', path: '/rumor-check' },
+    { label: 'Video Tutorials', path: '/video-tutorials' },
 ];
 
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,10 @@ export default function QuickLinks() {
             </div>
 
             {/* Civic Hero Badge - Darker */}
-            <button className="bg-gradient-to-r from-slate-100 to-white hover:from-green-100 hover:to-white text-slate-800 px-6 py-3 rounded-full font-bold border border-slate-300 text-center shadow-md">
+            <button
+                onClick={() => navigate('/civic-badge')}
+                className="bg-gradient-to-r from-slate-100 to-white hover:from-green-100 hover:to-white text-slate-800 px-6 py-3 rounded-full font-bold border border-slate-300 text-center shadow-md"
+            >
                 Get a Civic Hero Badge
             </button>
         </div>

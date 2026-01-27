@@ -160,7 +160,7 @@ export default function Chat() {
                 </div>
 
                 <p className="text-center text-xs text-gray-400 mt-2">
-                    Powered by Gemma 2B • Prerona may make mistakes
+                    Powered by Amar Vote • Prerona may make mistakes
                 </p>
 
             </div>

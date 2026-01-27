@@ -8,20 +8,20 @@ export default function NavigationMap() {
     const location = useLocation();
 
     const menuItems = [
-        { label: 'Page 1: Home', path: '/' },
-        { label: 'Page 2: Vote Center', path: '/vote-center' },
-        { label: 'Page 3: Candidate List', path: '/candidate-list' },
-        { label: 'Page 4: Candidate Details', path: '/candidate-details' }, // Still placeholder or matches list
-        { label: 'Page 5: Sign Up', path: '/sign-up' },
-        { label: 'Page 6: Status', path: '/status' },
-        { label: 'Page 7: Video Tutorials', path: '/video-tutorials' },
-        { label: 'Page 8: Placeholder', path: '#' },
-        { label: 'Page 9: Placeholder', path: '#' },
-        { label: 'Page 10: Placeholder', path: '#' },
+        { label: 'Home', path: '/' },
+        { label: 'Election Updates', path: '/election-updates' },
+        { label: 'Your Vote Center', path: '/vote-center' },
+        { label: 'Course', path: '/course' },
+        { label: 'Compare Candidates', path: '/compare' },
+        { label: 'Rumor Check', path: '/rumor-check' },
+        { label: 'Video Tutorials', path: '/video-tutorials' },
+        { label: 'Get a Civic Hero Badge', path: '/civic-badge' },
     ];
+    // Hide on mobile when on chat page
+    const isOnChatPage = location.pathname === '/chat';
 
     return (
-        <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
+        <div className={`fixed bottom-8 right-8 z-50 flex flex-col items-end ${isOnChatPage ? 'hidden md:flex' : ''}`}>
             {/* Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
