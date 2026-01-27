@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getUpdates } from '../lib/api';
-import { Calendar, Bell } from 'lucide-react';
+import { Calendar, Bell, ChevronDown } from 'lucide-react';
 
 export default function ElectionUpdates() {
     const [updates, setUpdates] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [expandedId, setExpandedId] = useState<number | null>(null);
 
     useEffect(() => {
         const loadUpdates = async () => {
@@ -42,25 +43,38 @@ export default function ElectionUpdates() {
                         updates.map((update) => (
                             <div key={update.id} className="bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow border border-gray-100 relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 group-hover:w-2 transition-all"></div>
-                                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                                    <Calendar className="w-4 h-4" />
-                                    {new Date(update.published_at).toLocaleDateString(undefined, {
-                                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                                    })}
+                                <div
+                                    className="cursor-pointer"
+                                    onClick={() => setExpandedId(expandedId === update.id ? null : update.id)}
+                                >
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                                            <Calendar className="w-4 h-4" />
+                                            {new Date(update.published_at).toLocaleDateString(undefined, {
+                                                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                                            })}
+                                        </div>
+                                        <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${expandedId === update.id ? 'rotate-180' : ''}`} />
+                                    </div>
+                                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{update.title}</h2>
                                 </div>
-                                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{update.title}</h2>
-                                {update.image_url && (
-                                    <div className="mb-6 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
-                                        <img
-                                            src={update.image_url}
-                                            alt={update.title}
-                                            className="w-full h-auto max-h-[600px] object-contain"
-                                        />
+
+                                {expandedId === update.id && (
+                                    <div className="mt-4 animate-fadeIn">
+                                        {update.image_url && (
+                                            <div className="mb-6 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                                                <img
+                                                    src={update.image_url}
+                                                    alt={update.title}
+                                                    className="w-full h-auto max-h-[600px] object-contain"
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="prose prose-blue max-w-none text-gray-600">
+                                            <p className="whitespace-pre-wrap leading-relaxed">{update.content}</p>
+                                        </div>
                                     </div>
                                 )}
-                                <div className="prose prose-blue max-w-none text-gray-600">
-                                    <p className="whitespace-pre-wrap leading-relaxed">{update.content}</p>
-                                </div>
                             </div>
                         ))
                     )}
