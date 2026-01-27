@@ -38,6 +38,14 @@ async function main() {
             await db.executeMultiple(sql);
         }
 
+        // Insert initial users
+        await db.execute({
+            sql: `INSERT OR IGNORE INTO users (full_name, email, password_hash, role, phone_number, verification_status) VALUES
+                ('Admin User', 'admin@amarballot.com', 'admin123', 'admin', '01700000000', 'verified'),
+                ('John Doe', 'john@example.com', 'password123', 'voter', '01711111111', 'pending')`,
+            args: [],
+        });
+
         console.log("✅ Database seeded successfully!");
     } catch (e) {
         console.error("❌ Seeding failed:", e);

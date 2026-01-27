@@ -2,6 +2,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
+import AdminRoute from './components/AdminRoute';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminUsers from './pages/AdminUsers';
+import AdminCandidates from './pages/AdminCandidates';
+import AdminCenters from './pages/AdminCenters';
+import AdminUpdates from './pages/AdminUpdates';
+import AdminRumors from './pages/AdminRumors';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import VoteCenter from './pages/VoteCenter';
@@ -29,11 +36,14 @@ import ContactUs from './pages/ContactUs';
 // import Course from './pages/Course';
 // import CompareCandidates from './pages/CompareCandidates';
 // import RumorCheck from './pages/RumorCheck';
-// import CivicBadge from './pages/CivicBadge';
-// import Chat from './pages/Chat';
+import CivicBadge from './pages/CivicBadge';
 import Placeholder from './pages/Placeholder';
 import NavigationMap from './components/NavigationMap';
 import './index.css';
+import ElectionUpdates from './pages/ElectionUpdates';
+import Course from './pages/Course';
+import CompareCandidates from './pages/CompareCandidates';
+import RumorCheck from './pages/RumorCheck';
 
 import { useEffect } from 'react';
 import { checkConnection } from './lib/db';
@@ -76,6 +86,16 @@ function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/contact" element={<ContactUs />} />
 
+                {/* Admin Routes */}
+                <Route path="/adm" element={<AdminRoute />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="candidates" element={<AdminCandidates />} />
+                  <Route path="centers" element={<AdminCenters />} />
+                  <Route path="updates" element={<AdminUpdates />} />
+                  <Route path="rumors" element={<AdminRumors />} />
+                </Route>
+
                 {/* New Pages */}
                 {/* <Route path="/candidate-details" element={<CandidateDetails />} />
                 <Route path="/voter-guide" element={<VoterGuide />} />
@@ -91,11 +111,11 @@ function App() {
                 <Route path="/archive" element={<PastResults />} /> */}
 
                 {/* Menu Pages from Image */}
-                {/* <Route path="/election-updates" element={<ElectionUpdates />} />
+                <Route path="/election-updates" element={<ElectionUpdates />} />
                 <Route path="/course" element={<Course />} />
                 <Route path="/compare" element={<CompareCandidates />} />
                 <Route path="/rumor-check" element={<RumorCheck />} />
-                <Route path="/civic-badge" element={<CivicBadge />} /> */}
+                <Route path="/civic-badge" element={<CivicBadge />} />
 
                 <Route path="*" element={<Placeholder />} />
               </Routes>

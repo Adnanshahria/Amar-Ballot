@@ -117,3 +117,219 @@ export async function verifyUser(userId: number, nidData: any) {
         return { success: false, error };
     }
 }
+
+export async function getDashboardStats() {
+    try {
+        const users = await db.execute('SELECT COUNT(*) as count FROM users');
+        const candidates = await db.execute('SELECT COUNT(*) as count FROM candidates');
+        const centers = await db.execute('SELECT COUNT(*) as count FROM vote_centers');
+
+        return {
+            success: true,
+            stats: {
+                users: users.rows[0].count as number,
+                candidates: candidates.rows[0].count as number,
+                centers: centers.rows[0].count as number
+            }
+        };
+    } catch (error) {
+        console.error("Stats error:", error);
+        return {
+            success: false,
+            stats: { users: 0, candidates: 0, centers: 0 }
+        };
+    }
+}
+
+export async function addCandidate(candidateData: any) {
+    const { name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area } = candidateData;
+    try {
+        await db.execute({
+            sql: `INSERT INTO candidates (name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: [name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Add candidate error:", error);
+        return { success: false, error };
+    }
+}
+
+export async function updateCandidate(_id: number, _candidateData: any) {
+    // Basic update logic placeholder
+    return { success: false, message: "Update not implemented yet" };
+}
+
+export async function deleteCandidate(id: number) {
+    try {
+        await db.execute({
+            sql: 'DELETE FROM candidates WHERE id = ?',
+            args: [id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Delete candidate error:", error);
+        return { success: false, error };
+    }
+}
+
+// --- USERS MANAGEMENT ---
+
+export async function getUsers() {
+    try {
+        const result = await db.execute('SELECT * FROM users ORDER BY created_at DESC');
+        return result.rows.map(row => ({
+            id: row.id,
+            name: row.full_name,
+            email: row.email,
+            phone: row.phone_number,
+            role: row.role,
+            verification_status: row.verification_status,
+            nid_number: row.nid_number,
+            voter_area: row.voter_area,
+            date_of_birth: row.date_of_birth
+        }));
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return [];
+    }
+}
+
+export async function deleteUser(id: number) {
+    try {
+        await db.execute({
+            sql: 'DELETE FROM users WHERE id = ?',
+            args: [id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Delete user error:", error);
+        return { success: false, error };
+    }
+}
+
+// --- VOTE CENTERS MANAGEMENT ---
+
+export async function addVoteCenter(centerData: any) {
+    const { name, name_bn, address, address_bn, division, district, area, latitude, longitude, capacity } = centerData;
+    try {
+        await db.execute({
+            sql: `INSERT INTO vote_centers (name, name_bn, address, address_bn, division, district, area, latitude, longitude, capacity) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: [name, name_bn, address, address_bn, division, district, area, latitude, longitude, capacity]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Add center error:", error);
+        return { success: false, error };
+    }
+}
+
+export async function updateVoteCenter(_id: number, _centerData: any) {
+    return { success: false, message: "Update not implemented yet" };
+}
+
+export async function deleteVoteCenter(id: number) {
+    try {
+        await db.execute({
+            sql: 'DELETE FROM vote_centers WHERE id = ?',
+            args: [id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Delete center error:", error);
+        return { success: false, error };
+    }
+}
+
+// --- ELECTION UPDATES MANAGEMENT ---
+
+export async function getUpdates() {
+    try {
+        const result = await db.execute('SELECT * FROM election_updates ORDER BY published_at DESC');
+        return result.rows.map(row => ({
+            id: row.id,
+            title: row.title,
+            content: row.content,
+            image_url: row.image_url,
+            published_at: row.published_at
+        }));
+    } catch (error) {
+        console.error("Error fetching updates:", error);
+        return [];
+    }
+}
+
+export async function addUpdate(updateData: any) {
+    const { title, content, image_url } = updateData;
+    try {
+        await db.execute({
+            sql: `INSERT INTO election_updates (title, content, image_url) VALUES (?, ?, ?)`,
+            args: [title, content, image_url || null]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Add update error:", error);
+        return { success: false, error };
+    }
+}
+
+export async function deleteUpdate(id: number) {
+    try {
+        await db.execute({
+            sql: 'DELETE FROM election_updates WHERE id = ?',
+            args: [id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Delete update error:", error);
+        return { success: false, error };
+    }
+}
+
+// --- RUMORS MANAGEMENT ---
+
+export async function getRumors() {
+    try {
+        const result = await db.execute('SELECT * FROM rumors ORDER BY published_at DESC');
+        return result.rows.map(row => ({
+            id: row.id,
+            title: row.title,
+            description: row.description,
+            status: row.status,
+            source: row.source,
+            published_at: row.published_at
+        }));
+    } catch (error) {
+        console.error("Error fetching rumors:", error);
+        return [];
+    }
+}
+
+export async function addRumor(rumorData: any) {
+    const { title, description, status, source } = rumorData;
+    try {
+        await db.execute({
+            sql: `INSERT INTO rumors (title, description, status, source) VALUES (?, ?, ?, ?)`,
+            args: [title, description, status, source]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Add rumor error:", error);
+        return { success: false, error };
+    }
+}
+
+export async function deleteRumor(id: number) {
+    try {
+        await db.execute({
+            sql: 'DELETE FROM rumors WHERE id = ?',
+            args: [id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Delete rumor error:", error);
+        return { success: false, error };
+    }
+}

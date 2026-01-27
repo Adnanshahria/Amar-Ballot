@@ -1,51 +1,93 @@
-import { ShieldAlert, ShieldCheck, Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getRumors } from '../lib/api';
+import { ShieldCheck, ShieldAlert, Search, ExternalLink } from 'lucide-react';
 
 export default function RumorCheck() {
-    return (
-        <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 relative flex flex-col items-center justify-start min-h-[80vh]">
-            <div className="w-full max-w-4xl relative z-10">
-                <h1 className="text-4xl text-green-900 font-serif font-bold text-center mb-8">Rumor Check</h1>
+    const [rumors, setRumors] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
-                <div className="mb-8">
-                    <div className="bg-white p-2 rounded-full shadow-lg border border-green-200 flex items-center">
-                        <Search className="w-6 h-6 text-gray-400 ml-3" />
-                        <input
-                            type="text"
-                            placeholder="Search a rumor topic..."
-                            className="flex-1 px-4 py-2 outline-none text-gray-700 bg-transparent"
-                        />
-                        <button className="bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:bg-green-700">Check</button>
+    useEffect(() => {
+        const loadRumors = async () => {
+            const data = await getRumors();
+            setRumors(data);
+            setLoading(false);
+        };
+        loadRumors();
+    }, []);
+
+    const filteredRumors = rumors.filter(r =>
+        r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+        <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
+            <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-12">
+                    <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <ShieldAlert className="w-8 h-8 text-orange-600" />
                     </div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4">Rumor Check & Verification</h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                        Verify election-related information. We fact-check viral claims to ensure you have accurate information.
+                    </p>
                 </div>
 
-                <div className="grid gap-6">
-                    {/* False Claim */}
-                    <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-red-200">
-                        <div className="flex items-center gap-2 mb-3">
-                            <ShieldAlert className="w-6 h-6 text-red-600" />
-                            <span className="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full uppercase">False</span>
-                        </div>
-                        <h2 className="text-xl font-bold text-gray-800 mb-2">Claim: Voting requires a smartphone.</h2>
-                        <p className="text-gray-700 border-l-4 border-green-500 pl-4 italic">
-                            Fact: This is incorrect. Voting is done via paper ballot or EVM at the polling station. No personal phone is needed.
-                        </p>
-                    </div>
+                {/* Search */}
+                <div className="relative max-w-2xl mx-auto mb-10">
+                    <input
+                        type="text"
+                        placeholder="Search for a rumor or topic..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-12 pr-6 py-4 rounded-full border border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all shadow-sm text-lg"
+                    />
+                    <Search className="w-6 h-6 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                </div>
 
-                    {/* True Claim */}
-                    <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-green-200">
-                        <div className="flex items-center gap-2 mb-3">
-                            <ShieldCheck className="w-6 h-6 text-green-600" />
-                            <span className="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full uppercase">True</span>
-                        </div>
-                        <h2 className="text-xl font-bold text-gray-800 mb-2">Claim: Polls close at 4:00 PM.</h2>
-                        <p className="text-gray-700 border-l-4 border-green-500 pl-4 italic">
-                            Fact: Yes, official polling hours are from 8:00 AM to 4:00 PM uninterrupted.
-                        </p>
-                    </div>
+                <div className="space-y-4">
+                    {loading ? (
+                        <div className="text-center py-12">Loading...</div>
+                    ) : filteredRumors.length === 0 ? (
+                        <div className="text-center py-12 text-gray-500">No records found.</div>
+                    ) : (
+                        filteredRumors.map((rumor) => (
+                            <div key={rumor.id} className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6">
+                                <div className="shrink-0 flex md:block justify-center">
+                                    {rumor.status === 'verified' ? (
+                                        <div className="bg-green-50 text-green-700 px-4 py-3 rounded-xl flex flex-col items-center gap-1 w-32 border border-green-100">
+                                            <ShieldCheck className="w-8 h-8" />
+                                            <span className="font-bold text-sm uppercase tracking-wide">Verified</span>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-red-50 text-red-700 px-4 py-3 rounded-xl flex flex-col items-center gap-1 w-32 border border-red-100">
+                                            <ShieldAlert className="w-8 h-8" />
+                                            <span className="font-bold text-sm uppercase tracking-wide">Fake</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <h2 className="text-xl font-bold text-gray-900 mb-3">{rumor.title}</h2>
+                                    <p className="text-gray-600 mb-4 leading-relaxed">{rumor.description}</p>
+
+                                    {rumor.source && (
+                                        <a
+                                            href={rumor.source}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                                        >
+                                            <ExternalLink className="w-4 h-4" />
+                                            View Source / Fact Check
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
-            {/* Background Faded Image */}
-            <div className="fixed inset-0 z-0 opacity-5 pointer-events-none bg-[url('/src/assets/nirbachon-bhaban.png')] bg-cover bg-center"></div>
-        </main>
+        </div>
     );
 }

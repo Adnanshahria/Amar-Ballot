@@ -5,7 +5,7 @@ import { loginUser, registerUser, verifyUser } from '../lib/api';
 interface AuthContextType {
     isLoggedIn: boolean;
     user: any | null;
-    login: (credentials: any) => Promise<{ success: boolean; message?: string }>;
+    login: (credentials: any) => Promise<{ success: boolean; message?: string; user?: any }>;
     register: (userData: any) => Promise<{ success: boolean; error?: any }>;
     verify: (userId: number, nidData: any) => Promise<{ success: boolean; error?: any }>;
     logout: () => void;
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setIsLoggedIn(true);
             setUser(result.user);
             // In a real app, store token in localStorage here
-            return { success: true };
+            return result;
         }
         return { success: false, message: result.message || "Login failed" };
     };

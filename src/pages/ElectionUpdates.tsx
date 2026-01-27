@@ -1,45 +1,71 @@
-import { Bell, Newspaper, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getUpdates } from '../lib/api';
+import { Calendar, Bell } from 'lucide-react';
 
 export default function ElectionUpdates() {
+    const [updates, setUpdates] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadUpdates = async () => {
+            const data = await getUpdates();
+            setUpdates(data);
+            setLoading(false);
+        };
+        loadUpdates();
+    }, []);
+
     return (
-        <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 relative flex flex-col items-center justify-start min-h-[80vh]">
-            <div className="w-full max-w-4xl relative z-10">
-                <h1 className="text-4xl text-green-900 font-serif font-bold text-center mb-8">Election Updates</h1>
+        <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
+            <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-12">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Bell className="w-8 h-8 text-blue-600" />
+                    </div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4">Election Updates</h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                        Stay informed with the latest announcements, schedule changes, and official news regarding the election.
+                    </p>
+                </div>
 
                 <div className="space-y-6">
-                    {/* Latest Alert */}
-                    <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-xl shadow-sm flex items-start gap-4">
-                        <Bell className="w-8 h-8 text-red-600 flex-shrink-0" />
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800">Voting Schedule Announced</h2>
-                            <p className="text-sm text-gray-600 mb-2">January 25, 2026</p>
-                            <p className="text-gray-700">The Election Commission has officially announced that the 13th National Parliamentary Election will be held on December 30, 2026. Polls will be open from 8:00 AM to 4:00 PM.</p>
+                    {loading ? (
+                        <div className="text-center py-12">
+                            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                            <p className="text-gray-500">Loading updates...</p>
                         </div>
-                    </div>
-
-                    {/* News Item 1 */}
-                    <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-green-100 flex items-start gap-4 hover:shadow-md transition-shadow">
-                        <Newspaper className="w-8 h-8 text-green-600 flex-shrink-0" />
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800">New Voter List Published</h2>
-                            <p className="text-sm text-gray-600 mb-2">January 20, 2026</p>
-                            <p className="text-gray-700">The updated voter list for all constituencies is now available. Check your registration status online or at your local election office.</p>
+                    ) : updates.length === 0 ? (
+                        <div className="bg-white rounded-2xl p-12 text-center shadow-sm text-gray-500">
+                            No updates published yet.
                         </div>
-                    </div>
-
-                    {/* News Item 2 */}
-                    <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-green-100 flex items-start gap-4 hover:shadow-md transition-shadow">
-                        <Calendar className="w-8 h-8 text-green-600 flex-shrink-0" />
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800">Candidate Nomination Deadline</h2>
-                            <p className="text-sm text-gray-600 mb-2">January 15, 2026</p>
-                            <p className="text-gray-700">Candidates must submit their nomination papers by February 15, 2026. Scrutiny of nominations will take place on February 20.</p>
-                        </div>
-                    </div>
+                    ) : (
+                        updates.map((update) => (
+                            <div key={update.id} className="bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow border border-gray-100 relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 group-hover:w-2 transition-all"></div>
+                                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                    <Calendar className="w-4 h-4" />
+                                    {new Date(update.published_at).toLocaleDateString(undefined, {
+                                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                                    })}
+                                </div>
+                                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{update.title}</h2>
+                                {update.image_url && (
+                                    <div className="mb-6 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                                        <img
+                                            src={update.image_url}
+                                            alt={update.title}
+                                            className="w-full h-auto max-h-[600px] object-contain"
+                                        />
+                                    </div>
+                                )}
+                                <div className="prose prose-blue max-w-none text-gray-600">
+                                    <p className="whitespace-pre-wrap leading-relaxed">{update.content}</p>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
-            {/* Background Faded Image */}
-            <div className="fixed inset-0 z-0 opacity-5 pointer-events-none bg-[url('/src/assets/nirbachon-bhaban.png')] bg-cover bg-center"></div>
-        </main>
+        </div>
     );
 }
