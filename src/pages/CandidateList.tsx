@@ -5,6 +5,7 @@ import { getCandidates } from '../lib/api';
 import type { Candidate } from '../lib/types';
 
 
+import AllianceSelector from '../components/AllianceSelector';
 import { SEAT_SYSTEM } from '../lib/seats';
 
 // Helper to get divisions from the seat system
@@ -16,6 +17,7 @@ export default function CandidateList() {
     const [selectedDivision, setSelectedDivision] = useState<string | null>('ঢাকা');
     const [selectedDistrict, setSelectedDistrict] = useState<string | null>('ফরিদপুর');
     const [selectedArea, setSelectedArea] = useState<string | null>('ফরিদপুর-৩');
+    const [selectedAlliance, setSelectedAlliance] = useState<string | null>(null);
     const [showResults, setShowResults] = useState(false);
 
     const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -63,7 +65,7 @@ export default function CandidateList() {
     };
 
     const handleContinue = () => {
-        if (selectedDivision && selectedDistrict && selectedArea) {
+        if (selectedDivision && selectedDistrict && selectedArea && selectedAlliance) {
             setShowResults(true);
         }
     };
@@ -146,13 +148,21 @@ export default function CandidateList() {
                     </div>
                 </div>
 
+                {/* Alliance MCQ Selector */}
+                {selectedDivision && selectedDistrict && selectedArea && !showResults && (
+                    <AllianceSelector
+                        selectedAlliance={selectedAlliance}
+                        onSelect={setSelectedAlliance}
+                    />
+                )}
+
                 {/* Continue/Show Results Button */}
                 {!showResults && (
                     <div className="mt-8">
                         <button
                             onClick={handleContinue}
-                            disabled={!selectedDivision || !selectedDistrict || !selectedArea}
-                            className={`w-32 h-32 rounded-full text-white font-serif text-center p-4 flex flex-col items-center justify-center shadow-xl transition-transform border-4 border-green-100/20 ${selectedDivision && selectedDistrict && selectedArea ? 'bg-gradient-to-br from-green-600 to-green-800 hover:scale-105 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+                            disabled={!selectedDivision || !selectedDistrict || !selectedArea || !selectedAlliance}
+                            className={`w-32 h-32 rounded-full text-white font-serif text-center p-4 flex flex-col items-center justify-center shadow-xl transition-transform border-4 border-green-100/20 ${selectedDivision && selectedDistrict && selectedArea && selectedAlliance ? 'bg-gradient-to-br from-green-600 to-green-800 hover:scale-105 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
                         >
                             <span className="text-xl leading-tight">Click to Continue</span>
                         </button>
