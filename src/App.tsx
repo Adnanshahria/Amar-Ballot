@@ -44,6 +44,7 @@ import ElectionUpdates from './pages/ElectionUpdates';
 import Course from './pages/Course';
 import CompareCandidates from './pages/CompareCandidates';
 import RumorCheck from './pages/RumorCheck';
+import Creator from './pages/Creator';
 
 import { useEffect } from 'react';
 import { checkConnection } from './lib/db';
@@ -115,6 +116,7 @@ function App() {
               <Route path="/compare" element={<CompareCandidates />} />
               <Route path="/rumor-check" element={<RumorCheck />} />
               <Route path="/civic-badge" element={<CivicBadge />} />
+              <Route path="/creator" element={<Creator />} />
 
               <Route path="*" element={<Placeholder />} />
             </Routes>
