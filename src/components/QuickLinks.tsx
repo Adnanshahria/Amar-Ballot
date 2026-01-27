@@ -1,9 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../data/translations';
 
 export default function QuickLinks() {
-    const navigate = useNavigate();
     const { language } = useLanguage();
     const t = translations[language];
 
@@ -29,19 +28,15 @@ export default function QuickLinks() {
             <div className="space-y-4">
                 {quickLinks.map((link, index) => {
                     return (
-                        <button
+                        <Link
                             key={index}
-                            onClick={() => {
-                                if (link.path !== '#') {
-                                    navigate(link.path);
-                                }
-                            }}
-                            className="w-full py-3.5 px-6 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all text-center group"
+                            to={link.path}
+                            className="block w-full py-3.5 px-6 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all text-center group"
                         >
                             <span className="font-bold text-gray-600 text-lg group-hover:text-green-700 font-serif">
                                 {link.label}
                             </span>
-                        </button>
+                        </Link>
                     );
                 })}
             </div>

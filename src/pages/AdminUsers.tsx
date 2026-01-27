@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getUsers, deleteUser } from '../lib/api';
-import { Trash2, Search, CheckCircle, XCircle, Mail, Phone, Calendar } from 'lucide-react';
+import { Trash2, Search, CheckCircle, XCircle, Mail, Phone } from 'lucide-react';
 
 export default function AdminUsers() {
     const [users, setUsers] = useState<any[]>([]);
