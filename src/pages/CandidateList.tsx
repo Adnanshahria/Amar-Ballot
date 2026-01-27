@@ -1,5 +1,9 @@
-import { Search, Fan, Car, Cat } from 'lucide-react';
-import { useState } from 'react';
+import { Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { getCandidates } from '../lib/api';
+import type { Candidate } from '../lib/types';
+
 
 const divisions = ['Dhaka', 'Rajshahi', 'Chittagong', 'Barishal', 'Khulna', 'Sylhet', 'Mymensingh', 'Rangpur'];
 
@@ -22,10 +26,28 @@ const areasByDistrict: Record<string, string[]> = {
 };
 
 export default function CandidateList() {
+    const { language } = useLanguage(); // Use in future for static labels
+
     const [selectedDivision, setSelectedDivision] = useState<string | null>('Dhaka');
     const [selectedDistrict, setSelectedDistrict] = useState<string | null>('Faridpur');
     const [selectedArea, setSelectedArea] = useState<string | null>('Faridpur-3');
     const [showResults, setShowResults] = useState(false);
+
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (showResults && selectedArea) {
+            setLoading(true);
+            getCandidates().then(data => {
+                // Filter by area (in real app, assume API filters or we filter here)
+                // For now, fetching ALL and filtering client side for demo
+                const filtered = data.filter(c => c.area === selectedArea);
+                setCandidates(filtered);
+                setLoading(false);
+            });
+        }
+    }, [showResults, selectedArea]);
 
     const districts = selectedDivision ? districtsByDivision[selectedDivision] || [] : [];
     const areas = selectedDistrict ? areasByDistrict[selectedDistrict] || [`${selectedDistrict}-1`, `${selectedDistrict}-2`, `${selectedDistrict}-3`] : [];
@@ -42,6 +64,7 @@ export default function CandidateList() {
         setSelectedArea(null);
         setShowResults(false);
     };
+
 
     const handleAreaClick = (area: string) => {
         setSelectedArea(area);
@@ -148,49 +171,42 @@ export default function CandidateList() {
                 {showResults && (
                     <div className="w-full max-w-4xl mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="w-full bg-green-700 text-white font-serif text-xl px-4 py-3 rounded-t-md shadow mb-4 text-center">
-                            Available Candidates in {selectedArea}
+                            {loading ? (
+                                <span>Loading candidates...</span>
+                            ) : (
+                                <span>Available Candidates in {selectedArea} ({candidates.length})</span>
+                            )}
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {/* Candidate 1 */}
-                            <div className="bg-green-50/90 rounded-xl p-4 flex flex-col items-center border border-green-200 hover:shadow-lg transition-shadow cursor-pointer">
-                                <div className="bg-white px-6 py-2 rounded-full text-green-800 font-serif font-bold mb-4 shadow-sm w-full text-center">
-                                    Nargis Akter
-                                </div>
-                                <div className="mb-4">
-                                    <Cat className="w-12 h-12 text-black" />
-                                </div>
-                                <button className="w-full bg-white border border-green-300 text-green-800 text-sm py-1 rounded shadow-sm hover:bg-green-50">
-                                    Tap to see details
-                                </button>
+                        {!loading && (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {candidates.length > 0 ? (
+                                    candidates.map((candidate) => (
+                                        <div key={candidate.id} className="bg-green-50/90 rounded-xl p-4 flex flex-col items-center border border-green-200 hover:shadow-lg transition-shadow cursor-pointer">
+                                            <div className="bg-white px-6 py-2 rounded-full text-green-800 font-serif font-bold mb-4 shadow-sm w-full text-center">
+                                                {language === 'bn' ? candidate.name_bn || candidate.name : candidate.name}
+                                            </div>
+                                            <div className="mb-4 text-4xl">
+                                                {candidate.symbol} {/* Display Symbol directly */}
+                                            </div>
+                                            <div className="text-sm text-green-700 font-medium mb-2">
+                                                {language === 'bn' ? candidate.party_bn || candidate.party : candidate.party}
+                                            </div>
+                                            <button className="w-full bg-white border border-green-300 text-green-800 text-sm py-1 rounded shadow-sm hover:bg-green-50">
+                                                {language === 'bn' ? "বিস্তারিত দেখুন" : "Tap to see details"}
+                                            </button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="col-span-3 text-center text-gray-500 py-8">
+                                        {language === 'bn'
+                                            ? "এই এলাকার জন্য কোনো প্রার্থী পাওয়া যায়নি।"
+                                            : "No candidates found for this area in the database."}
+                                    </div>
+                                )}
                             </div>
+                        )}
 
-                            {/* Candidate 2 */}
-                            <div className="bg-green-50/90 rounded-xl p-4 flex flex-col items-center border border-green-200 hover:shadow-lg transition-shadow cursor-pointer">
-                                <div className="bg-white px-6 py-2 rounded-full text-green-800 font-serif font-bold mb-4 shadow-sm w-full text-center">
-                                    Rahim Mia
-                                </div>
-                                <div className="mb-4">
-                                    <Fan className="w-12 h-12 text-black" />
-                                </div>
-                                <button className="w-full bg-white border border-green-300 text-green-800 text-sm py-1 rounded shadow-sm hover:bg-green-50">
-                                    Tap to see details
-                                </button>
-                            </div>
-
-                            {/* Candidate 3 */}
-                            <div className="bg-green-50/90 rounded-xl p-4 flex flex-col items-center border border-green-200 hover:shadow-lg transition-shadow cursor-pointer">
-                                <div className="bg-white px-6 py-2 rounded-full text-green-800 font-serif font-bold mb-4 shadow-sm w-full text-center">
-                                    Anamika Poddar
-                                </div>
-                                <div className="mb-4">
-                                    <Car className="w-12 h-12 text-black" />
-                                </div>
-                                <button className="w-full bg-white border border-green-300 text-green-800 text-sm py-1 rounded shadow-sm hover:bg-green-50">
-                                    Tap to see details
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 )}
 

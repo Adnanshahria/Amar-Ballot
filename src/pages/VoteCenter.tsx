@@ -1,9 +1,34 @@
 import { MapPin } from 'lucide-react';
 import AssistantAvatar from '../components/AssistantAvatar';
+import SEO from '../components/SEO';
+import { useLanguage } from '../context/LanguageContext';
+import { getVoteCenters } from '../lib/api';
+import type { VoteCenter } from '../lib/types';
+import { useState } from 'react';
 
 export default function VoteCenter() {
+    const { language } = useLanguage();
+    const [voteCenter, setVoteCenter] = useState<VoteCenter | null>(null);
+    const [nid, setNid] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleLookup = async () => {
+        setLoading(true);
+        // In a real app we would search by NID. 
+        // Here we just fetch the first one from DB for demo.
+        const centers = await getVoteCenters();
+        if (centers.length > 0) {
+            setVoteCenter(centers[0]);
+        }
+        setLoading(false);
+    };
+
     return (
         <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 relative flex flex-col items-center justify-center min-h-[80vh]">
+            <SEO
+                title={language === 'bn' ? "আপনার ভোট কেন্দ্র" : "Your Vote Center"}
+                description="Find your voting center and voter number."
+            />
 
             {/* Main Card Container */}
             <div className="relative w-full max-w-4xl bg-white/90 backdrop-blur-sm border-2 border-green-600 rounded-lg p-8 shadow-xl overflow-hidden">
@@ -15,7 +40,7 @@ export default function VoteCenter() {
 
                     {/* Title */}
                     <h1 className="text-4xl text-green-900 font-serif font-medium text-center">
-                        Find Your Vote Center
+                        {language === 'bn' ? "ভোট কেন্দ্র খুঁজুন" : "Find Your Vote Center"}
                     </h1>
 
                     {/* Form Section */}
@@ -24,7 +49,7 @@ export default function VoteCenter() {
                         <div className="relative">
                             <input
                                 type="text"
-                                placeholder="DD/MM/YY"
+                                placeholder={language === 'bn' ? "দিন/মাস/বছর" : "DD/MM/YY"}
                                 className="w-full bg-green-50/80 border-b-2 border-green-400 px-4 py-3 text-center text-green-800 placeholder-green-700/50 focus:outline-none focus:border-green-600 focus:bg-white transition-colors text-lg"
                             />
                         </div>
@@ -33,16 +58,32 @@ export default function VoteCenter() {
                         <div className="relative">
                             <input
                                 type="text"
-                                placeholder="NID Number"
+                                value={nid}
+                                onChange={(e) => setNid(e.target.value)}
+                                placeholder={language === 'bn' ? "এনআইডি নম্বর" : "NID Number"}
                                 className="w-full bg-green-50/80 border-b-2 border-green-400 px-4 py-3 text-center text-green-800 placeholder-green-700/50 focus:outline-none focus:border-green-600 focus:bg-white transition-colors text-lg"
                             />
                         </div>
 
                         {/* CTA Button */}
-                        <button className="w-full bg-green-800 hover:bg-green-900 text-white font-serif text-xl py-3 rounded-full shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 mt-4">
-                            Click to continue
+                        <button
+                            onClick={handleLookup}
+                            disabled={loading}
+                            className="w-full bg-green-800 hover:bg-green-900 text-white font-serif text-xl py-3 rounded-full shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 mt-4 disabled:opacity-70">
+                            {loading ? (language === 'bn' ? "খোঁজা হচ্ছে..." : "Searching...") : (language === 'bn' ? "সামনে এগিয়ে যান" : "Click to continue")}
                         </button>
                     </div>
+
+                    {/* Result Display */}
+                    {voteCenter && (
+                        <div className="w-full bg-green-50 border border-green-200 rounded-lg p-4 mt-2 text-center animate-in fade-in">
+                            <h3 className="font-bold text-green-900 text-xl">{language === 'bn' ? voteCenter.name_bn || voteCenter.name : voteCenter.name}</h3>
+                            <p className="text-green-800">{language === 'bn' ? voteCenter.address_bn || voteCenter.address : voteCenter.address}</p>
+                            <div className="mt-2 text-sm text-green-600">
+                                Area: {voteCenter.area}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Bottom Section */}
                     <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-center mt-8">

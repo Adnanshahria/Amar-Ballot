@@ -1,44 +1,50 @@
-const quickLinks = [
-    { label: 'Election Updates', path: '/election-updates' },
-    { label: 'Your Vote Center', path: '/vote-center' },
-    { label: 'Course', path: '/course' },
-    { label: 'Compare Candidates', path: '/compare' },
-    { label: 'Rumor Check', path: '/rumor-check' },
-    { label: 'Video Tutorials', path: '/video-tutorials' },
-];
-
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
 
 export default function QuickLinks() {
     const navigate = useNavigate();
+    const { language } = useLanguage();
+    const t = translations[language];
+
+    const quickLinks = [
+        { label: t.home.quickLinks.updates, path: '/election-updates' },
+        { label: t.home.quickLinks.center, path: '/vote-center' },
+        { label: t.home.quickLinks.course, path: '/course' },
+        { label: t.home.quickLinks.compare, path: '/compare' },
+        { label: t.home.quickLinks.rumor, path: '/rumor-check' },
+        { label: t.home.quickLinks.tutorials, path: '/video-tutorials' },
+        { label: t.home.quickLinks.badge, path: '/civic-badge' },
+    ];
 
     return (
-        <div className="flex flex-col gap-2">
-            {/* Ready to Vote Badge - Simple pill shape with shadow */}
-            <div className="bg-white text-green-600 px-8 py-3 rounded-full text-center font-bold text-xl shadow-lg border border-gray-100 italic">
-                Ready to vote!
+        <div className="h-full flex flex-col justify-center gap-4 p-4">
+            {/* Ready to Vote Header - styled as a pill */}
+            <div className="w-full py-3.5 px-6 rounded-full bg-white shadow-sm text-center mb-1">
+                <h2 className="text-green-600 font-bold font-serif text-2xl italic">
+                    {t.home.readyToVote}
+                </h2>
             </div>
 
-            {/* Quick Links */}
-            <div className="space-y-2">
-                {quickLinks.map((link) => (
-                    <button
-                        key={link.label}
-                        onClick={() => link.path !== '#' && navigate(link.path)}
-                        className="w-full bg-gradient-to-r from-gray-50 to-white hover:from-green-50 hover:to-white px-6 py-3 rounded-full transition-all border border-gray-200 text-gray-600 font-medium text-center shadow-sm"
-                    >
-                        {link.label}
-                    </button>
-                ))}
+            <div className="space-y-4">
+                {quickLinks.map((link, index) => {
+                    return (
+                        <button
+                            key={index}
+                            onClick={() => {
+                                if (link.path !== '#') {
+                                    navigate(link.path);
+                                }
+                            }}
+                            className="w-full py-3.5 px-6 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all text-center group"
+                        >
+                            <span className="font-bold text-gray-600 text-lg group-hover:text-green-700 font-serif">
+                                {link.label}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
-
-            {/* Civic Hero Badge - Darker */}
-            <button
-                onClick={() => navigate('/civic-badge')}
-                className="bg-gradient-to-r from-slate-100 to-white hover:from-green-100 hover:to-white text-slate-800 px-6 py-3 rounded-full font-bold border border-slate-300 text-center shadow-md"
-            >
-                Get a Civic Hero Badge
-            </button>
         </div>
     );
 }

@@ -1,16 +1,25 @@
-
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
+import SEO from '../components/SEO';
 
 export default function ContactUs() {
+    const { language } = useLanguage();
+    const t = translations[language];
+
     return (
         <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-12 relative flex flex-col items-center min-h-[80vh]">
+            <SEO
+                title={t.contact.title}
+                description={t.contact.subtitle}
+            />
             <div className="w-full max-w-6xl flex flex-col items-center gap-12 relative z-10">
 
                 {/* Header */}
                 <div className="text-center">
-                    <h1 className="text-5xl text-green-900 font-serif font-bold mb-4">Contact Us</h1>
+                    <h1 className="text-5xl text-green-900 font-serif font-bold mb-4">{t.contact.title}</h1>
                     <p className="text-xl text-green-800/80 max-w-2xl mx-auto">
-                        Have questions about voting or the app? Reach out to us.
+                        {t.contact.subtitle}
                     </p>
                 </div>
 
@@ -18,27 +27,27 @@ export default function ContactUs() {
 
                     {/* Contact Form */}
                     <div className="bg-white p-8 rounded-2xl shadow-lg border border-green-100">
-                        <h2 className="text-2xl font-serif font-bold text-green-900 mb-6">Send us a message</h2>
+                        <h2 className="text-2xl font-serif font-bold text-green-900 mb-6">{t.contact.form.title}</h2>
                         <form className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                <input type="text" className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder="Your Name" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t.contact.form.name}</label>
+                                <input type="text" className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder={t.contact.form.placeholderName} />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder="your@email.com" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t.contact.form.email}</label>
+                                <input type="email" className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder={t.contact.form.placeholderEmail} />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <input type="text" className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder="Topic" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t.contact.form.subject}</label>
+                                <input type="text" className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder={t.contact.form.placeholderSubject} />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                <textarea rows={4} className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder="Write your message here..."></textarea>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t.contact.form.message}</label>
+                                <textarea rows={4} className="w-full bg-green-50 border border-green-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all" placeholder={t.contact.form.placeholderMessage}></textarea>
                             </div>
                             <button className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-95">
                                 <Send className="w-5 h-5" />
-                                Send Message
+                                {t.contact.form.send}
                             </button>
                         </form>
                     </div>
@@ -50,7 +59,7 @@ export default function ContactUs() {
                                 <Mail className="w-6 h-6 text-green-700" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-800 mb-1">Email Us</h3>
+                                <h3 className="text-xl font-bold text-gray-800 mb-1">{t.contact.info.emailTitle}</h3>
                                 <p className="text-gray-600">support@amarballot.bd</p>
                                 <p className="text-gray-600">info@amarballot.bd</p>
                             </div>
@@ -61,7 +70,7 @@ export default function ContactUs() {
                                 <Phone className="w-6 h-6 text-green-700" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-800 mb-1">Call Us</h3>
+                                <h3 className="text-xl font-bold text-gray-800 mb-1">{t.contact.info.callTitle}</h3>
                                 <p className="text-gray-600">+880 1711 000000</p>
                                 <p className="text-gray-600 leading-relaxed text-sm mt-1 text-gray-500">
                                     Mon-Fri from 9am to 5pm.
@@ -74,10 +83,9 @@ export default function ContactUs() {
                                 <MapPin className="w-6 h-6 text-green-700" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-800 mb-1">Visit Office</h3>
-                                <p className="text-gray-600">
-                                    Nirbachon Bhaban,<br />
-                                    Agargaon, Dhaka-1207.
+                                <h3 className="text-xl font-bold text-gray-800 mb-1">{t.contact.info.visitTitle}</h3>
+                                <p className="text-gray-600 whitespace-pre-line">
+                                    {t.contact.info.address}
                                 </p>
                             </div>
                         </div>

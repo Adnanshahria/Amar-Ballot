@@ -1,32 +1,34 @@
-import { Bell, Globe, LogIn, LogOut, Menu, X, User } from 'lucide-react';
+import { Bell, Globe, LogIn, Menu, X, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
+import { translations } from '../data/translations';
+import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
-const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Services', path: '/services' },
-    { name: 'Contact Us', path: '/contact' },
-];
 
 export default function Header() {
+    const { language, toggleLanguage } = useLanguage();
+    const t = translations[language]; // Direct access to translations
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Simple state for demo
+    const { isLoggedIn } = useAuth(); // Use global auth state
     const location = useLocation();
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        navigate('/sign-up'); // Redirect to sign-up/login page
-    };
+    // Define navigation items with translations
+    const navItems = [
+        { key: 'home', path: '/', label: t.nav.home, icon: '🏠' },
+        { key: 'about', path: '/about', label: language === 'bn' ? 'আমাদের সম্পর্কে' : 'About Us' },
+        { key: 'services', path: '/services', label: language === 'bn' ? 'সেবা সমূহ' : 'Services' },
+        { key: 'contact', path: '/contact', label: language === 'bn' ? 'যোগাযোগ' : 'Contact Us' }
+    ];
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-    };
-
-    // For demo: clicking "Mr. Mukit" will toggle login state
-    const handleUserClick = () => {
-        setIsLoggedIn(!isLoggedIn);
+    const handleAccountClick = () => {
+        if (isLoggedIn) {
+            navigate('/dashboard');
+        } else {
+            navigate('/sign-up');
+        }
     };
 
     return (
@@ -43,16 +45,16 @@ export default function Header() {
 
                         {/* Desktop Navigation */}
                         <nav className="hidden md:flex items-center gap-2">
-                            {navLinks.map((link) => {
-                                const isActive = location.pathname === link.path;
+                            {navItems.map((item) => {
+                                const isActive = location.pathname === item.path;
                                 return (
                                     <Link
-                                        key={link.name}
-                                        to={link.path}
+                                        key={item.key}
+                                        to={item.path}
                                         className={`text-gray-700 hover:text-green-700 hover:bg-green-50 font-medium transition-all px-4 py-2 rounded-xl flex items-center gap-1 bg-white border border-gray-200 shadow-sm ${isActive ? 'text-green-700 ring-2 ring-green-100' : ''}`}
                                     >
-                                        {link.name === 'Home' && <span>🏠</span>}
-                                        {link.name}
+                                        {item.icon && <span>{item.icon}</span>}
+                                        {item.label}
                                     </Link>
                                 )
                             })}
@@ -60,9 +62,12 @@ export default function Header() {
 
                         {/* Right Actions */}
                         <div className="hidden md:flex items-center gap-3">
-                            <button className="flex items-center gap-1 text-gray-600 hover:text-green-600 transition-colors bg-white px-4 py-2 rounded-xl border border-gray-200 shadow-sm">
+                            <button
+                                onClick={toggleLanguage}
+                                className="flex items-center gap-1 text-gray-600 hover:text-green-600 transition-colors bg-white px-4 py-2 rounded-xl border border-gray-200 shadow-sm"
+                            >
                                 <Globe className="h-4 w-4" />
-                                <span className="text-sm font-medium">EN</span>
+                                <span className="text-sm font-medium uppercase">{language}</span>
                             </button>
                             <button className="relative text-gray-600 hover:text-green-600 transition-colors bg-white p-2.5 rounded-xl border border-gray-200 shadow-sm">
                                 <Bell className="h-5 w-5" />
@@ -71,40 +76,24 @@ export default function Header() {
                                 </span>
                             </button>
 
-                            {/* Login/Logout Toggle */}
-                            {isLoggedIn ? (
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={handleUserClick}
-                                        className="flex items-center gap-2 bg-green-50 text-green-800 px-4 py-2 rounded-xl border border-green-200 shadow-sm hover:bg-green-100 transition-colors"
-                                    >
-                                        <User className="h-4 w-4" />
-                                        <span className="font-medium">Mr. Mukit</span>
-                                    </button>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-colors shadow-md"
-                                    >
-                                        <LogOut className="h-4 w-4" />
-                                        <span className="font-medium">Logout</span>
-                                    </button>
-                                </div>
-                            ) : (
-                                <button
-                                    onClick={handleLogin}
-                                    className="flex items-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-xl hover:bg-green-700 transition-colors shadow-md"
-                                >
-                                    <LogIn className="h-4 w-4" />
-                                    <span className="font-medium">Login</span>
-                                </button>
-                            )}
+                            {/* Account Button (Replaces Login) */}
+                            <button
+                                onClick={handleAccountClick}
+                                className="flex items-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-xl hover:bg-green-700 transition-colors shadow-md"
+                            >
+                                {isLoggedIn ? <User className="h-4 w-4" /> : <LogIn className="h-4 w-4" />}
+                                <span className="font-medium">Account</span>
+                            </button>
                         </div>
 
                         {/* Mobile Actions - Visible on mobile */}
                         <div className="flex md:hidden items-center gap-2">
-                            <button className="flex items-center gap-1 text-gray-600 bg-white px-2 py-1 rounded-lg border border-gray-200 shadow-sm text-xs">
+                            <button
+                                onClick={toggleLanguage}
+                                className="flex items-center gap-1 text-gray-600 bg-white px-2 py-1 rounded-lg border border-gray-200 shadow-sm text-xs"
+                            >
                                 <Globe className="h-3 w-3" />
-                                <span className="font-medium">EN</span>
+                                <span className="font-medium uppercase">{language}</span>
                             </button>
                             <button className="relative text-gray-600 bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm">
                                 <Bell className="h-4 w-4" />
@@ -125,41 +114,25 @@ export default function Header() {
                     {isMenuOpen && (
                         <div className="md:hidden pb-3">
                             <nav className="flex flex-col gap-1.5">
-                                {navLinks.map((link) => (
+                                {navItems.map((link) => (
                                     <Link
-                                        key={link.name}
+                                        key={link.key}
                                         to={link.path}
                                         className="text-gray-700 hover:text-green-600 font-medium py-2 px-3 rounded-lg hover:bg-green-100 transition-colors bg-white border border-gray-200 text-sm"
                                         onClick={() => setIsMenuOpen(false)}
                                     >
-                                        {link.name}
+                                        {link.label}
                                     </Link>
                                 ))}
 
-                                {/* Mobile Login/Logout */}
-                                {isLoggedIn ? (
-                                    <>
-                                        <div className="flex items-center gap-2 bg-green-50 text-green-800 px-3 py-2 rounded-lg border border-green-200 text-sm">
-                                            <User className="h-4 w-4" />
-                                            <span className="font-medium">Mr. Mukit</span>
-                                        </div>
-                                        <button
-                                            onClick={() => { handleLogout(); setIsMenuOpen(false); }}
-                                            className="flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors mt-1 text-sm"
-                                        >
-                                            <LogOut className="h-4 w-4" />
-                                            <span className="font-medium">Logout</span>
-                                        </button>
-                                    </>
-                                ) : (
-                                    <button
-                                        onClick={() => { handleLogin(); setIsMenuOpen(false); }}
-                                        className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors mt-1 text-sm"
-                                    >
-                                        <LogIn className="h-4 w-4" />
-                                        <span className="font-medium">Login</span>
-                                    </button>
-                                )}
+                                {/* Mobile Account Button */}
+                                <button
+                                    onClick={() => { handleAccountClick(); setIsMenuOpen(false); }}
+                                    className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors mt-1 text-sm"
+                                >
+                                    {isLoggedIn ? <User className="h-4 w-4" /> : <LogIn className="h-4 w-4" />}
+                                    <span className="font-medium">Account</span>
+                                </button>
                             </nav>
                         </div>
                     )}
