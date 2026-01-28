@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Share2, Copy, CheckCircle2, ChevronRight, AlertCircle, BookOpen, Users, Award, HelpCircle, FileText, Shield } from 'lucide-react';
+import { useState } from 'react';
+import { Copy, CheckCircle2, ChevronRight, AlertCircle, BookOpen, Users, Award, HelpCircle, FileText, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../data/translations';
@@ -14,11 +14,10 @@ export default function CivicBadge() {
 
     const [activeTab, setActiveTab] = useState<ModuleType>('dashboard');
     const [referralCode] = useState('05012003'); // Mock code or user ID
-    const [referralCount, setReferralCount] = useState(3); // Mock count
+    const [referralCount] = useState(3); // Mock count
     const [quizAnswered, setQuizAnswered] = useState(false);
 
     // Quiz State
-    const [currentQuestion, setCurrentQuestion] = useState(0);
     // Note: In a real app, questions would be an array in translations or fetched from API
     // Here we use the single question from translation for demo
 

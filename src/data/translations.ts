@@ -224,6 +224,40 @@ export const translations = {
                 desc: "Voting shouldn't be complicated. We noticed that many citizens, especially first-time voters, struggle to find their polling centers or know who is running in their constituency. Amar Ballot was born from a desire to simplify this journey and encourage active civic participation.",
                 alt: "Team Illustration"
             }
+        },
+        candidateList: {
+            title: "Public Survey 2026",
+            subtitle: "Live Election Public Survey Results",
+            totalVotes: "Total Votes",
+            download: "Download Result Card",
+            reviews: {
+                title: "Voter Reviews",
+                sort: "Sort By",
+                newest: "Newest First",
+                oldest: "Oldest First",
+                allParties: "All Parties",
+                headers: {
+                    voter: "Voter",
+                    seat: "Seat",
+                    party: "Supporting Party",
+                    review: "Opinion / Comment",
+                    time: "Time"
+                },
+                empty: "No reviews match your filters.",
+                noVotes: "No votes cast in this election yet."
+            },
+            filters: {
+                division: "All Divisions",
+                district: "All Districts",
+                area: "All Seats",
+                reset: "Reset Filters"
+            },
+            resultTitles: {
+                area: "Result: {area} (Seat)",
+                district: "Result: {district} (District)",
+                division: "Result: {division} (Division)",
+                national: "National Public Survey Result"
+            }
         }
     },
     bn: {
