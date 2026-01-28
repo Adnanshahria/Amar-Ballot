@@ -1,6 +1,6 @@
 import { BarChart3, MessageSquare, Download, Filter, RefreshCcw, Clock, ArrowUpDown } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect } from 'react';
 import { getVoteStats, getReviews } from '../lib/api';
 import { SEAT_SYSTEM } from '../lib/seats';
 import { toPng } from 'html-to-image';
@@ -9,7 +9,7 @@ import { toPng } from 'html-to-image';
 const divisions = SEAT_SYSTEM.data.map(d => d.division);
 
 export default function CandidateList() {
-    const { user } = useAuth();
+    // const { user } = useAuth();
     const resultRef = useRef<HTMLDivElement>(null);
 
     // --- FILTER STATE ---

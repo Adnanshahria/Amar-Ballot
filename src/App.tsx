@@ -12,6 +12,7 @@ import AdminRumors from './pages/AdminRumors';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import VoteCenter from './pages/VoteCenter';
+import CastVote from './pages/CastVote';
 import CandidateList from './pages/CandidateList';
 import SignUp from './pages/SignUp';
 import NIDVerification from './pages/NIDVerification';
@@ -76,6 +77,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/vote-center" element={<VoteCenter />} />
+              <Route path="/cast-vote" element={<CastVote />} />
               <Route path="/candidate-list" element={<CandidateList />} />
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/verify-nid" element={<NIDVerification />} />
