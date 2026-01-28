@@ -14,7 +14,7 @@ export const translations = {
                 updates: "Election Updates",
                 center: "Your Vote Center",
                 course: "Course",
-                compare: "Compare Candidates",
+                candidateList: "Candidates List",
                 rumor: "Rumor Check",
                 tutorials: "Video Tutorials",
                 badge: "Get Civic Hero Badge"
@@ -141,7 +141,7 @@ export const translations = {
                 updates: "নির্বাচন আপডেট",
                 center: "আপনার ভোট কেন্দ্র",
                 course: "কোর্স",
-                compare: "প্রার্থী তুলনা",
+                candidateList: "প্রার্থী তালিকা",
                 rumor: "গুজব যাচাই",
                 tutorials: "ভিডিও টিউটোরিয়াল",
                 badge: "সিভিক হিরো ব্যাজ নিন"

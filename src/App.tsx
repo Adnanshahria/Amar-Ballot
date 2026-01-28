@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
@@ -42,7 +42,6 @@ import NavigationMap from './components/NavigationMap';
 import './index.css';
 import ElectionUpdates from './pages/ElectionUpdates';
 import Course from './pages/Course';
-import CompareCandidates from './pages/CompareCandidates';
 import RumorCheck from './pages/RumorCheck';
 import Creator from './lib/Copyright';
 
@@ -113,7 +112,7 @@ function App() {
               {/* Menu Pages from Image */}
               <Route path="/election-updates" element={<ElectionUpdates />} />
               <Route path="/course" element={<Course />} />
-              <Route path="/compare" element={<CompareCandidates />} />
+              <Route path="/compare" element={<Navigate to="/candidate-list" replace />} />
               <Route path="/rumor-check" element={<RumorCheck />} />
               <Route path="/civic-badge" element={<CivicBadge />} />
               <Route path="/creator" element={<Creator />} />

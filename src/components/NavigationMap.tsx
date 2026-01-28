@@ -16,7 +16,7 @@ export default function NavigationMap() {
         { label: t.home.quickLinks.updates, path: '/election-updates' },
         { label: t.nav.voteCenter, path: '/vote-center' },
         { label: t.home.quickLinks.course, path: '/course' },
-        { label: t.home.quickLinks.compare, path: '/compare' },
+        { label: t.home.quickLinks.candidateList, path: '/candidate-list' },
         { label: t.home.quickLinks.rumor, path: '/rumor-check' },
         { label: t.home.quickLinks.tutorials, path: '/video-tutorials' },
         { label: t.home.quickLinks.badge, path: '/civic-badge' },
