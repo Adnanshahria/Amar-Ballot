@@ -96,7 +96,11 @@ export async function loginUser(credentials: any) {
                 role: user.role,
                 verification_status: user.verification_status,
                 nid_number: user.nid_number,
-                voter_area: user.voter_area
+                voter_area: user.voter_area,
+                // Location data for authenticated voting
+                division: user.division,
+                district: user.district,
+                seat_no: user.seat_no
             }
         };
     } catch (error) {
@@ -106,11 +110,11 @@ export async function loginUser(credentials: any) {
 }
 
 export async function verifyUser(userId: number, nidData: any) {
-    const { nidNumber, dateOfBirth, voterArea } = nidData;
+    const { nidNumber, dateOfBirth, voterArea, division, district, seatNo } = nidData;
     try {
         await db.execute({
-            sql: `UPDATE users SET nid_number = ?, date_of_birth = ?, voter_area = ?, verification_status = 'verified' WHERE id = ?`,
-            args: [nidNumber, dateOfBirth, voterArea, userId]
+            sql: `UPDATE users SET nid_number = ?, date_of_birth = ?, voter_area = ?, division = ?, district = ?, seat_no = ?, verification_status = 'verified' WHERE id = ?`,
+            args: [nidNumber, dateOfBirth, voterArea, division, district, seatNo, userId]
         });
         return { success: true };
     } catch (error) {
@@ -332,5 +336,160 @@ export async function deleteRumor(id: number) {
     } catch (error) {
         console.error("Delete rumor error:", error);
         return { success: false, error };
+    }
+}
+
+// --- VOTING MANAGEMENT ---
+
+export async function submitVote(voteData: any) {
+    // division, district, seat_no, alliance_id, user_review, user_name, user_id
+    const { division, district, seat_no, alliance_id, user_review, user_name, user_id } = voteData;
+
+    if (!user_id) {
+        return { success: false, message: "User ID is required to vote." };
+    }
+
+    try {
+        // 1. Check if user already voted
+        const existingVote = await db.execute({
+            sql: `SELECT id FROM votes WHERE user_id = ?`,
+            args: [user_id]
+        });
+
+        if (existingVote.rows.length > 0) {
+            return { success: false, message: "already_voted" };
+        }
+
+        // 2. Insert new vote
+        await db.execute({
+            // ID is autoincrement
+            // user_name is optional
+            sql: `INSERT INTO votes (division, district, seat_no, alliance_id, user_review, user_name, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            args: [division, district, seat_no, alliance_id, user_review || null, user_name || 'Anonymous', user_id]
+        });
+
+        // Trigger automatically updates alliance_stats
+        return { success: true };
+    } catch (error) {
+        console.error("Submit vote error:", error);
+        return { success: false, error };
+    }
+
+}
+
+export async function checkUserVoteStatus(userId: number) {
+    try {
+        const result = await db.execute({
+            sql: 'SELECT id FROM votes WHERE user_id = ?',
+            args: [userId]
+        });
+        return { success: true, hasVoted: result.rows.length > 0 };
+    } catch (error) {
+        console.error("Check vote status error:", error);
+        return { success: false, hasVoted: false };
+    }
+}
+
+interface VoteFilters {
+    division?: string;
+    district?: string;
+    seat_no?: string;
+}
+
+export async function getVoteStats(filters?: VoteFilters) {
+    try {
+        let sql: string;
+        let args: any[] = [];
+
+        // Check if any filter is active
+        const hasFilters = filters && (filters.division || filters.district || filters.seat_no);
+
+        if (hasFilters) {
+            // GRANULAR QUERY: Query the main 'votes' table directly
+            let whereClause = "WHERE 1=1";
+
+            if (filters?.seat_no) {
+                whereClause += " AND seat_no = ?";
+                args.push(filters.seat_no);
+            } else if (filters?.district) {
+                whereClause += " AND district = ?";
+                args.push(filters.district);
+            } else if (filters?.division) {
+                whereClause += " AND division = ?";
+                args.push(filters.division);
+            }
+
+            sql = `
+                SELECT alliance_id, COUNT(*) as total_votes 
+                FROM votes 
+                ${whereClause}
+                GROUP BY alliance_id
+            `;
+        } else {
+            // GLOBAL QUERY: Read from optimized cache table
+            sql = `
+                SELECT alliance_id, total_votes 
+                FROM alliance_stats
+            `;
+        }
+
+        const result = await db.execute({ sql, args });
+
+        const stats: Record<string, number> = {};
+        result.rows.forEach(row => {
+            stats[row.alliance_id as string] = row.total_votes as number;
+        });
+
+        return { success: true, stats };
+    } catch (error) {
+        console.error("Error fetching vote stats:", error);
+        return { success: false, stats: {} };
+    }
+}
+
+interface ReviewFilters {
+    seat_no?: string;
+    district?: string;
+    division?: string;
+}
+
+export async function getReviews(filters: ReviewFilters) {
+    try {
+        let whereClause = "WHERE user_review IS NOT NULL AND user_review != ''";
+        let args: any[] = [];
+
+        if (filters.seat_no) {
+            whereClause += " AND seat_no = ?";
+            args.push(filters.seat_no);
+        } else if (filters.district) {
+            whereClause += " AND district = ?";
+            args.push(filters.district);
+        } else if (filters.division) {
+            // Optional: Support division level reviews if needed, though high volume
+            whereClause += " AND division = ?";
+            args.push(filters.division);
+        } else {
+            // National Level: Fetch recent reviews globally
+            // No additional WHERE clause needed beyond the base one
+        }
+
+        const result = await db.execute({
+            sql: `SELECT alliance_id, user_review, user_name, created_at, seat_no FROM votes ${whereClause} ORDER BY created_at DESC LIMIT 100`,
+            args: args
+        });
+
+        return {
+            success: true,
+            reviews: result.rows.map(row => ({
+                alliance_id: row.alliance_id as string,
+                review: row.user_review as string,
+                user_name: row.user_name as string,
+                created_at: row.created_at,
+                seat_no: row.seat_no as string
+            }))
+        };
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+        return { success: false, reviews: [] };
     }
 }

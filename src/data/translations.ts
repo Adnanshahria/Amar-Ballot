@@ -3,7 +3,7 @@ export const translations = {
         nav: {
             home: "Home",
             voteCenter: "Vote Center",
-            candidates: "Candidates",
+            candidates: "Public Survey 2026",
             login: "Login",
             signup: "Sign Up",
             map: "Navigation Map"
@@ -14,7 +14,7 @@ export const translations = {
                 updates: "Election Updates",
                 center: "Your Vote Center",
                 course: "Course",
-                candidateList: "Candidates List",
+                candidateList: "Public Survey 2026",
                 rumor: "Rumor Check",
                 tutorials: "Video Tutorials",
                 badge: "Get Civic Hero Badge"
@@ -130,7 +130,7 @@ export const translations = {
         nav: {
             home: "হোম",
             voteCenter: "ভোট কেন্দ্র",
-            candidates: "প্রার্থী তালিকা",
+            candidates: "জনমত জরিপ ২০২৬",
             login: "লগ ইন",
             signup: "নিবন্ধন",
             map: "নেভিগেশন ম্যাপ"
@@ -141,7 +141,7 @@ export const translations = {
                 updates: "নির্বাচন আপডেট",
                 center: "আপনার ভোট কেন্দ্র",
                 course: "কোর্স",
-                candidateList: "প্রার্থী তালিকা",
+                candidateList: "জনমত জরিপ ২০২৬",
                 rumor: "গুজব যাচাই",
                 tutorials: "ভিডিও টিউটোরিয়াল",
                 badge: "সিভিক হিরো ব্যাজ নিন"

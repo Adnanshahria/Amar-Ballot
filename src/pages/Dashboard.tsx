@@ -1,11 +1,23 @@
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, MapPin, Newspaper, Shield, Vote, UserCheck, Clock, CheckCircle } from 'lucide-react';
+import { LogOut, MapPin, Newspaper, Shield, Vote, UserCheck, Clock, CheckCircle, ArrowRight } from 'lucide-react';
+
+import { checkUserVoteStatus } from '../lib/api';
+import { useState } from 'react';
 
 export default function Dashboard() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [hasVoted, setHasVoted] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            checkUserVoteStatus(user.id).then(res => {
+                if (res.success) setHasVoted(res.hasVoted);
+            });
+        }
+    }, [user]);
 
     const handleLogout = () => {
         logout();
@@ -101,7 +113,7 @@ export default function Dashboard() {
                                         </div>
                                         <div className="flex justify-between sm:block border-b sm:border-0 border-white/10 pb-1 sm:pb-0">
                                             <p className="text-green-200 text-xs sm:mb-0.5">District</p>
-                                            <p className="font-medium">Dhaka</p>
+                                            <p className="font-medium">{(user as any)?.district || 'Dhaka'}</p>
                                         </div>
                                         <div className="flex justify-between sm:block">
                                             <p className="text-green-200 text-xs sm:mb-0.5">Voter Area</p>
@@ -157,6 +169,51 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
+
+                {/* Action Section: Vote Now or View Results */}
+                {!hasVoted ? (
+                    <div className="bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden group cursor-pointer transition-all hover:shadow-xl hover:scale-[1.01]" onClick={() => navigate('/vote-center')}>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-16 -mt-16 pointer-events-none transition-transform group-hover:scale-110"></div>
+                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left">
+                                <h2 className="text-2xl md:text-3xl font-bold font-serif mb-2 flex items-center justify-center md:justify-start gap-3">
+                                    <Vote className="w-8 h-8 animate-pulse text-green-200" />
+                                    আপনার ভোট প্রদান করুন
+                                </h2>
+                                <p className="text-green-100 text-sm md:text-base max-w-xl">
+                                    ২০২৬ সালের জাতীয় নির্বাচনে আপনার মতামত জানান। আপনার ভোট অত্যন্ত গুরুত্বপূর্ণ।
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                                <button className="bg-white text-green-800 font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-green-50 transition-colors flex items-center gap-2">
+                                    ভোট দিন
+                                    <ArrowRight className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="bg-gradient-to-r from-blue-700 to-blue-600 rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden group cursor-pointer transition-all hover:shadow-xl hover:scale-[1.01]" onClick={() => navigate('/candidate-list')}>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-16 -mt-16 pointer-events-none transition-transform group-hover:scale-110"></div>
+                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left">
+                                <h2 className="text-2xl md:text-3xl font-bold font-serif mb-2 flex items-center justify-center md:justify-start gap-3">
+                                    <CheckCircle className="w-8 h-8 text-blue-200" />
+                                    আপনার ভোট গ্রহণ করা হয়েছে
+                                </h2>
+                                <p className="text-blue-100 text-sm md:text-base max-w-xl">
+                                    ধন্যবাদ! আপনি সফলভাবে আপনার ভোট প্রদান করেছেন। ফলাফল দেখতে নিচের বাটনে ক্লিক করুন।
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                                <button className="bg-white text-blue-800 font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                                    ফলাফল দেখুন
+                                    <ArrowRight className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Quick Actions Bento Grid */}
                 <div>

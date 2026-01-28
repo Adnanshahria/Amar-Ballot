@@ -46,7 +46,7 @@ export default function SignUp() {
         if (isLogin) {
             const result = await login({ email: formData.email, password: formData.password });
             if (result.success) {
-                navigate('/');
+                navigate('/dashboard');
             } else {
                 setModal({
                     isOpen: true,

@@ -45,7 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 ...prev,
                 verification_status: 'verified',
                 nid_number: nidData.nidNumber,
-                voter_area: nidData.voterArea
+                voter_area: nidData.voterArea,
+                division: nidData.division,
+                district: nidData.district,
+                seat_no: nidData.seatNo
             }));
             return { success: true };
         }

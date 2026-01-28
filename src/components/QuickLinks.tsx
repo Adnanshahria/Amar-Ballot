@@ -25,7 +25,7 @@ export default function QuickLinks() {
                 </h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
                 {quickLinks.map((link, index) => {
                     return (
                         <Link
