@@ -47,11 +47,11 @@ export default function CivicBadge() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-20 pb-12 px-4 selection:bg-green-100 selection:text-green-900">
+        <div className="min-h-screen bg-gray-50 pt-16 md:pt-20 pb-12 px-3 sm:px-6 lg:px-8 selection:bg-green-100 selection:text-green-900">
             <div className="max-w-6xl mx-auto">
 
                 {/* Dashboard Header */}
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 relative overflow-hidden">
+                <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100 mb-6 md:mb-8 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
                     <div className="relative z-10">
                         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-serif mb-2">
@@ -143,7 +143,7 @@ export default function CivicBadge() {
 
                         {/* --- VOTER RIGHTS --- */}
                         {activeTab === 'rights' && (
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                            <div className="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
                                     <Award className="text-green-600" /> {t.rights.title}
                                 </h2>
@@ -163,7 +163,7 @@ export default function CivicBadge() {
 
                         {/* --- RESPONSIBILITIES --- */}
                         {activeTab === 'responsibilities' && (
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                            <div className="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
                                     <CheckCircle2 className="text-green-600" /> {t.responsibilities.title}
                                 </h2>
@@ -185,7 +185,7 @@ export default function CivicBadge() {
 
                         {/* --- NID PROCESS --- */}
                         {activeTab === 'nid' && (
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                            <div className="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
                                     <FileText className="text-green-600" /> {t.nid.title}
                                 </h2>
@@ -210,7 +210,7 @@ export default function CivicBadge() {
 
                         {/* --- VOTER RULES --- */}
                         {activeTab === 'rules' && (
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                            <div className="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
                                     <AlertCircle className="text-green-600" /> {t.rules.title}
                                 </h2>

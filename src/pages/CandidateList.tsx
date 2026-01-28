@@ -182,12 +182,12 @@ export default function CandidateList() {
     };
 
     return (
-        <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 relative flex flex-col items-center justify-start min-h-[80vh]">
+        <main className="flex-1 w-full px-2 sm:px-6 lg:px-12 py-6 md:py-8 relative flex flex-col items-center justify-start min-h-[80vh]">
 
             <div className="w-full max-w-6xl flex flex-col gap-6 relative z-10">
 
                 {/* --- HEADER & FILTERS --- */}
-                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-6 flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-4 md:p-6 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
                     <div>
                         <h1 className="text-2xl md:text-3xl text-green-900 font-serif font-bold flex items-center gap-3">
                             <BarChart3 className="w-8 h-8 text-green-600" />
@@ -320,7 +320,7 @@ export default function CandidateList() {
                 </div>
 
                 {/* --- REVIEWS TABLE SECTION --- */}
-                <div className="w-full bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-6 animate-in fade-in slide-in-from-bottom-8">
+                <div className="w-full bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-4 md:p-6 animate-in fade-in slide-in-from-bottom-8">
 
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b border-green-50 pb-4">
                         <h3 className="text-2xl text-green-800 font-serif font-bold flex items-center gap-2">
@@ -364,33 +364,33 @@ export default function CandidateList() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-green-50/80 text-green-900 border-b border-green-200">
-                                    <th className="p-4 font-bold whitespace-nowrap">{t.reviews.headers.voter}</th>
-                                    <th className="p-4 font-bold whitespace-nowrap">{t.reviews.headers.seat}</th>
-                                    <th className="p-4 font-bold whitespace-nowrap">{t.reviews.headers.party}</th>
-                                    <th className="p-4 font-bold w-1/2">{t.reviews.headers.review}</th>
-                                    <th className="p-4 font-bold whitespace-nowrap text-right">{t.reviews.headers.time}</th>
+                                    <th className="p-2 md:p-4 font-bold whitespace-nowrap">{t.reviews.headers.voter}</th>
+                                    <th className="p-2 md:p-4 font-bold whitespace-nowrap">{t.reviews.headers.seat}</th>
+                                    <th className="p-2 md:p-4 font-bold whitespace-nowrap">{t.reviews.headers.party}</th>
+                                    <th className="p-2 md:p-4 font-bold w-1/2">{t.reviews.headers.review}</th>
+                                    <th className="p-2 md:p-4 font-bold whitespace-nowrap text-right">{t.reviews.headers.time}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {getProcessedReviews().map((review, i) => (
                                     <tr key={i} className="hover:bg-green-50/30 transition-colors">
-                                        <td className="p-4">
-                                            <div className="font-bold text-gray-800">{maskName(review.user_name)}</div>
+                                        <td className="p-2 md:p-4">
+                                            <div className="font-bold text-sm md:text-base text-gray-800">{maskName(review.user_name)}</div>
                                         </td>
-                                        <td className="p-4">
-                                            <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded inline-block">
+                                        <td className="p-2 md:p-4">
+                                            <div className="text-xs md:text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded inline-block">
                                                 {review.seat_no || selectedArea}
                                             </div>
                                         </td>
-                                        <td className="p-4">
-                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-xs font-bold ${getAllianceColor(review.alliance_id)}`}>
+                                        <td className="p-2 md:p-4">
+                                            <div className={`inline-flex items-center gap-2 px-2 py-1 md:px-3 md:py-1 rounded-full text-white text-[10px] md:text-xs font-bold ${getAllianceColor(review.alliance_id)}`}>
                                                 {getAllianceLabel(review.alliance_id)}
                                             </div>
                                         </td>
-                                        <td className="p-4">
-                                            <p className="text-gray-700 italic text-sm">"{review.review}"</p>
+                                        <td className="p-2 md:p-4">
+                                            <p className="text-gray-700 italic text-sm md:text-base">"{review.review}"</p>
                                         </td>
-                                        <td className="p-4 text-right text-sm text-gray-500 whitespace-nowrap">
+                                        <td className="p-2 md:p-4 text-right text-xs md:text-sm text-gray-500 whitespace-nowrap">
                                             <div className="flex items-center justify-end gap-1">
                                                 <Clock className="w-3 h-3" />
                                                 {formatDate(review.created_at)}

@@ -31,7 +31,7 @@ export default function VoteCenter() {
             />
 
             {/* Main Card Container */}
-            <div className="relative w-full max-w-4xl bg-white/90 backdrop-blur-sm border-2 border-green-600 rounded-lg p-8 shadow-xl overflow-hidden">
+            <div className="relative w-full max-w-4xl bg-white/90 backdrop-blur-sm border-2 border-green-600 rounded-lg p-4 md:p-8 shadow-xl overflow-hidden">
 
                 {/* Background Image inside card - Faded */}
                 <div className="absolute inset-0 z-0 opacity-10 bg-[url('/src/assets/nirbachon-bhaban.png')] bg-cover bg-center"></div>
@@ -50,7 +50,7 @@ export default function VoteCenter() {
                             <input
                                 type="text"
                                 placeholder={language === 'bn' ? "দিন/মাস/বছর" : "DD/MM/YY"}
-                                className="w-full bg-green-50/80 border-b-2 border-green-400 px-4 py-3 text-center text-green-800 placeholder-green-700/50 focus:outline-none focus:border-green-600 focus:bg-white transition-colors text-lg"
+                                className="w-full bg-green-50/80 border-b-2 border-green-400 px-2 py-2 md:px-4 md:py-3 text-center text-green-800 placeholder-green-700/50 focus:outline-none focus:border-green-600 focus:bg-white transition-colors text-base md:text-lg"
                             />
                         </div>
 
@@ -61,7 +61,7 @@ export default function VoteCenter() {
                                 value={nid}
                                 onChange={(e) => setNid(e.target.value)}
                                 placeholder={language === 'bn' ? "এনআইডি নম্বর" : "NID Number"}
-                                className="w-full bg-green-50/80 border-b-2 border-green-400 px-4 py-3 text-center text-green-800 placeholder-green-700/50 focus:outline-none focus:border-green-600 focus:bg-white transition-colors text-lg"
+                                className="w-full bg-green-50/80 border-b-2 border-green-400 px-2 py-2 md:px-4 md:py-3 text-center text-green-800 placeholder-green-700/50 focus:outline-none focus:border-green-600 focus:bg-white transition-colors text-base md:text-lg"
                             />
                         </div>
 
@@ -69,7 +69,7 @@ export default function VoteCenter() {
                         <button
                             onClick={handleLookup}
                             disabled={loading}
-                            className="w-full bg-green-800 hover:bg-green-900 text-white font-serif text-xl py-3 rounded-full shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 mt-4 disabled:opacity-70">
+                            className="w-full bg-green-800 hover:bg-green-900 text-white font-serif text-lg md:text-xl py-2 md:py-3 rounded-full shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 mt-4 disabled:opacity-70">
                             {loading ? (language === 'bn' ? "খোঁজা হচ্ছে..." : "Searching...") : (language === 'bn' ? "সামনে এগিয়ে যান" : "Click to continue")}
                         </button>
                     </div>

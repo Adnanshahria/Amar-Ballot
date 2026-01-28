@@ -78,7 +78,7 @@ export default function Dashboard() {
                             <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 sm:p-4 h-full border border-white/20 flex flex-col sm:flex-row gap-3 sm:gap-5 relative z-10">
                                 {/* Photo Area */}
                                 <div className="flex-shrink-0 flex flex-col items-center sm:items-start">
-                                    <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gray-200 rounded-lg border-2 border-white/30 shadow-inner flex items-center justify-center overflow-hidden">
+                                    <div className="w-16 h-16 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gray-200 rounded-lg border-2 border-white/30 shadow-inner flex items-center justify-center overflow-hidden">
                                         <div className="text-center">
                                             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-300 rounded-full mx-auto mb-2 flex items-center justify-center">
                                                 <span className="text-xl sm:text-3xl">👤</span>
