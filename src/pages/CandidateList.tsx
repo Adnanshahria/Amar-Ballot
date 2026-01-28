@@ -3,12 +3,16 @@ import { useState, useEffect, useRef } from 'react';
 import { getVoteStats, getReviews } from '../lib/api';
 import { SEAT_SYSTEM } from '../lib/seats';
 import { toPng } from 'html-to-image';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
 
 // Helper to get divisions from the seat system
 const divisions = SEAT_SYSTEM.data.map(d => d.division);
 
 export default function CandidateList() {
     // const { user } = useAuth();
+    const { language } = useLanguage();
+    const t = translations[language].candidateList;
     const resultRef = useRef<HTMLDivElement>(null);
 
     // --- FILTER STATE ---
@@ -164,15 +168,15 @@ export default function CandidateList() {
     };
 
     const getCurrentScopeTitle = () => {
-        if (selectedArea) return `ফলাফল: ${selectedArea} (আসন)`;
-        if (selectedDistrict) return `ফলাফল: ${selectedDistrict} (জেলা)`;
-        if (selectedDivision) return `ফলাফল: ${selectedDivision} (বিভাগ)`;
-        return 'জাতীয় জনমত জরিপ ফলাফল';
+        if (selectedArea) return t.resultTitles.area.replace('{area}', selectedArea);
+        if (selectedDistrict) return t.resultTitles.district.replace('{district}', selectedDistrict);
+        if (selectedDivision) return t.resultTitles.division.replace('{division}', selectedDivision);
+        return t.resultTitles.national;
     };
 
     const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
-        return new Date(dateStr).toLocaleDateString('en-US', {
+        return new Date(dateStr).toLocaleDateString(language === 'bn' ? 'bn-BD' : 'en-US', {
             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
         });
     };
@@ -187,9 +191,9 @@ export default function CandidateList() {
                     <div>
                         <h1 className="text-2xl md:text-3xl text-green-900 font-serif font-bold flex items-center gap-3">
                             <BarChart3 className="w-8 h-8 text-green-600" />
-                            জনমত জরিপ ২০২৬
+                            {t.title}
                         </h1>
-                        <p className="text-gray-500 text-sm mt-1">Live Election Poll Results</p>
+                        <p className="text-gray-500 text-sm mt-1">{t.subtitle}</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 bg-green-50/50 p-2 rounded-xl border border-green-100">
@@ -204,7 +208,7 @@ export default function CandidateList() {
                             }}
                             className="bg-white border border-green-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5 min-w-[140px]"
                         >
-                            <option value="">সকল বিভাগ</option>
+                            <option value="">{t.filters.division}</option>
                             {divisions.map(div => <option key={div} value={div}>{div}</option>)}
                         </select>
 
@@ -217,7 +221,7 @@ export default function CandidateList() {
                             disabled={!selectedDivision}
                             className="bg-white border border-green-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5 min-w-[140px] disabled:opacity-50 disabled:bg-gray-100"
                         >
-                            <option value="">সকল জেলা</option>
+                            <option value="">{t.filters.district}</option>
                             {districts.map(dist => <option key={dist} value={dist}>{dist}</option>)}
                         </select>
 
@@ -227,7 +231,7 @@ export default function CandidateList() {
                             disabled={!selectedDistrict}
                             className="bg-white border border-green-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5 min-w-[140px] disabled:opacity-50 disabled:bg-gray-100"
                         >
-                            <option value="">সকল আসন</option>
+                            <option value="">{t.filters.area}</option>
                             {areas.map(area => <option key={area} value={area}>{area}</option>)}
                         </select>
 
@@ -251,7 +255,7 @@ export default function CandidateList() {
                             {getCurrentScopeTitle()}
                         </h2>
                         <div className="flex justify-center items-center gap-2 mt-2">
-                            <span className="text-gray-600 font-medium">সর্বমোট ভোট:</span>
+                            <span className="text-gray-600 font-medium">{t.totalVotes}:</span>
                             {loading ? (
                                 <span className="animate-pulse bg-gray-200 h-6 w-16 rounded block"></span>
                             ) : (
@@ -281,7 +285,7 @@ export default function CandidateList() {
                                                 {getAllianceLabel(allianceId)}
                                             </span>
                                             <span className="font-bold text-green-700 text-lg">
-                                                {count} ভোট ({percentage}%)
+                                                {count} ({percentage}%)
                                             </span>
                                         </div>
                                         <div className="w-full bg-gray-100 rounded-full h-6 overflow-hidden shadow-inner">
@@ -298,7 +302,7 @@ export default function CandidateList() {
 
                         {!loading && Object.keys(stats).length === 0 && (
                             <div className="text-center py-12 text-gray-400">
-                                <p>No votes cast in this selection yet.</p>
+                                <p>{t.reviews.noVotes}</p>
                             </div>
                         )}
                     </div>
@@ -309,7 +313,7 @@ export default function CandidateList() {
                             className="bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 px-6 rounded-lg shadow-md flex items-center gap-2 transition-transform active:scale-95 group"
                         >
                             <Download className="w-5 h-5 group-hover:animate-bounce" />
-                            Download Result Card
+                            {t.download}
                         </button>
                     </div>
 
@@ -321,14 +325,14 @@ export default function CandidateList() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b border-green-50 pb-4">
                         <h3 className="text-2xl text-green-800 font-serif font-bold flex items-center gap-2">
                             <MessageSquare className="w-6 h-6" />
-                            ভোটারদের মতামত ({selectedArea || selectedDistrict})
+                            {t.reviews.title} ({selectedArea || selectedDistrict || selectedDivision || 'National'})
                         </h3>
 
                         {/* SORT CONTROLS */}
                         <div className="flex items-center gap-2 bg-green-50 p-1.5 rounded-lg border border-green-100">
                             <span className="text-sm font-bold text-green-700 px-2 flex items-center gap-1">
                                 <ArrowUpDown className="w-4 h-4" />
-                                Sort Results:
+                                {t.reviews.sort}:
                             </span>
 
                             {/* Time Sort Dropdown */}
@@ -337,8 +341,8 @@ export default function CandidateList() {
                                 onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
                                 className="bg-transparent font-medium text-gray-700 text-sm focus:outline-none cursor-pointer hover:bg-green-50 rounded p-1"
                             >
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
+                                <option value="newest">{t.reviews.newest}</option>
+                                <option value="oldest">{t.reviews.oldest}</option>
                             </select>
 
                             {/* Party Filter Dropdown */}
@@ -347,7 +351,7 @@ export default function CandidateList() {
                                 onChange={(e) => setPartyFilter(e.target.value)}
                                 className="bg-transparent font-medium text-gray-700 text-sm focus:outline-none cursor-pointer hover:bg-green-50 rounded p-1 max-w-[150px]"
                             >
-                                <option value="all">All Parties</option>
+                                <option value="all">{t.reviews.allParties}</option>
                                 {ALL_ALLIANCES.map(id => (
                                     <option key={id} value={id}>{getAllianceLabel(id)}</option>
                                 ))}
@@ -360,11 +364,11 @@ export default function CandidateList() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-green-50/80 text-green-900 border-b border-green-200">
-                                    <th className="p-4 font-bold whitespace-nowrap">Voter</th>
-                                    <th className="p-4 font-bold whitespace-nowrap">Result Seat</th>
-                                    <th className="p-4 font-bold whitespace-nowrap">Supported Party</th>
-                                    <th className="p-4 font-bold w-1/2">Review / Comment</th>
-                                    <th className="p-4 font-bold whitespace-nowrap text-right">Time</th>
+                                    <th className="p-4 font-bold whitespace-nowrap">{t.reviews.headers.voter}</th>
+                                    <th className="p-4 font-bold whitespace-nowrap">{t.reviews.headers.seat}</th>
+                                    <th className="p-4 font-bold whitespace-nowrap">{t.reviews.headers.party}</th>
+                                    <th className="p-4 font-bold w-1/2">{t.reviews.headers.review}</th>
+                                    <th className="p-4 font-bold whitespace-nowrap text-right">{t.reviews.headers.time}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
@@ -398,7 +402,7 @@ export default function CandidateList() {
                         </table>
                         {getProcessedReviews().length === 0 && (
                             <div className="p-8 text-center text-gray-400 italic">
-                                {reviews.length > 0 ? "No reviews match your filter." : "No reviews available for this area yet."}
+                                {reviews.length > 0 ? t.reviews.empty : t.reviews.noVotes}
                             </div>
                         )}
                     </div>

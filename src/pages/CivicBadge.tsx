@@ -1,73 +1,51 @@
 import { useState, useEffect } from 'react';
 import { Share2, Copy, CheckCircle2, ChevronRight, AlertCircle, BookOpen, Users, Award, HelpCircle, FileText, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
 import confetti from 'canvas-confetti';
-
-// --- Types & Data ---
 
 type ModuleType = 'dashboard' | 'rights' | 'responsibilities' | 'nid' | 'rules';
 
-const VOTER_RIGHTS = [
-    { title: "Right to Vote Freely", desc: "No one can force you to vote a certain way. You make your own choice.", icon: <Award className="w-6 h-6 text-blue-600" /> },
-    { title: "Right to Secrecy", desc: "Your vote is private. No one should know who you voted for.", icon: <Shield className="w-6 h-6 text-green-600" /> },
-    { title: "Right to Information", desc: "You have the right to know about candidates and election issues.", icon: <BookOpen className="w-6 h-6 text-purple-600" /> },
-    { title: "Accessibility (PWD)", desc: "Polling stations must provide support for persons with disabilities.", icon: <Users className="w-6 h-6 text-orange-600" /> }
-];
-
-const RESPONSIBILITIES = [
-    { title: "Verify Registration", desc: "Ensure you are registered and eligible to vote." },
-    { title: "Follow the Law", desc: "Comply with all election rules and conduct." },
-    { title: "Avoid Influence", desc: "Vote based on your own views, not external pressure." },
-    { title: "Respect Privacy", desc: "Do not ask others who they voted for." }
-];
-
-const NID_STEPS = [
-    { step: 1, title: "Online Pre-Registration", desc: "Visit NID website, fill form, submit documents." },
-    { step: 2, title: "Visit Election Office", desc: "Go to designated center with application copy." },
-    { step: 3, title: "Biometric Collection", desc: "Provide fingerprints, photo, and signature." },
-    { step: 4, title: "Verification", desc: "Authorities verify your data and documents." },
-    { step: 5, title: "Receive NID", desc: "Collect your Smart NID card or download copy." }
-];
-
-const RULES = [
-    { rule: "Be Eligible", desc: "Must be a citizen and 18+ years old." },
-    { rule: "One Person, One Vote", desc: "Voting more than once is a crime." },
-    { rule: "No Campaigning", desc: "No political activity inside polling centers." },
-    { rule: "Bring ID", desc: "Carry your NID or voter slip." }
-];
-
 export default function CivicBadge() {
     const { user } = useAuth();
+    const { language } = useLanguage();
+    const t = translations[language].civicBadge;
+
     const [activeTab, setActiveTab] = useState<ModuleType>('dashboard');
     const [referralCode] = useState('05012003'); // Mock code or user ID
     const [referralCount, setReferralCount] = useState(3); // Mock count
     const [quizAnswered, setQuizAnswered] = useState(false);
-    const [showConfetti, setShowConfetti] = useState(false);
 
     // Quiz State
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const questions = [
-        {
-            question: "Which of the following is a citizen's duty?",
-            options: ["Pay Taxes", "Ignore Election", "Spread Misinformation", "Avoid Service"],
-            correct: 0
-        }
-    ];
+    // Note: In a real app, questions would be an array in translations or fetched from API
+    // Here we use the single question from translation for demo
 
     const handleQuizOption = (index: number) => {
-        if (index === questions[currentQuestion].correct) {
+        // Mock correct answer logic - assuming "Pay Taxes" (index 0) or similar positive duty
+        // In the translation, options are: ["Pay Taxes", "Ignore...", "Spread...", "Avoid..."]
+        // So index 0 is correct.
+        if (index === 0) {
             setQuizAnswered(true);
-            setShowConfetti(true);
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         } else {
-            alert("Try again! Think about what helps the nation.");
+            alert(t.quiz.failure);
         }
     };
 
     const copyReferral = () => {
         navigator.clipboard.writeText(`https://amarballot.bd/ref/${referralCode}`);
-        alert("Referral link copied!");
+        alert(t.hero.copy + "!");
     };
+
+    // Icons mapping for Rights
+    const rightsIcons = [
+        <Award className="w-6 h-6 text-blue-600" />,
+        <Shield className="w-6 h-6 text-green-600" />,
+        <BookOpen className="w-6 h-6 text-purple-600" />,
+        <Users className="w-6 h-6 text-orange-600" />
+    ];
 
     return (
         <div className="min-h-screen bg-gray-50 pt-20 pb-12 px-4 selection:bg-green-100 selection:text-green-900">
@@ -78,18 +56,18 @@ export default function CivicBadge() {
                     <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
                     <div className="relative z-10">
                         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-serif mb-2">
-                            Welcome, {user?.name || 'Citizen'}!
+                            {t.welcome}, {user?.name || 'Citizen'}!
                         </h1>
-                        <p className="text-gray-500">Your hub for civic engagement, learning, and rewards.</p>
+                        <p className="text-gray-500">{t.subtitle}</p>
 
                         {/* Tab Navigation */}
                         <div className="flex flex-wrap gap-2 mt-6">
                             {[
-                                { id: 'dashboard', label: 'Civic Hero', icon: <Award className="w-4 h-4" /> },
-                                { id: 'rights', label: 'Voter Rights', icon: <Shield className="w-4 h-4" /> },
-                                { id: 'responsibilities', label: 'Responsibilities', icon: <CheckCircle2 className="w-4 h-4" /> },
-                                { id: 'nid', label: 'Get NID', icon: <FileText className="w-4 h-4" /> },
-                                { id: 'rules', label: 'Voter Rules', icon: <AlertCircle className="w-4 h-4" /> },
+                                { id: 'dashboard', label: t.tabs.dashboard, icon: <Award className="w-4 h-4" /> },
+                                { id: 'rights', label: t.tabs.rights, icon: <Shield className="w-4 h-4" /> },
+                                { id: 'responsibilities', label: t.tabs.responsibilities, icon: <CheckCircle2 className="w-4 h-4" /> },
+                                { id: 'nid', label: t.tabs.nid, icon: <FileText className="w-4 h-4" /> },
+                                { id: 'rules', label: t.tabs.rules, icon: <AlertCircle className="w-4 h-4" /> },
                             ].map((tab) => (
                                 <button
                                     key={tab.id}
@@ -117,15 +95,15 @@ export default function CivicBadge() {
                         {/* --- DASHBOARD VIEW --- */}
                         {activeTab === 'dashboard' && (
                             <>
-                                {/* Referral Banner (Matches 13.png) */}
+                                {/* Referral Banner */}
                                 <div className="bg-gradient-to-r from-green-700 to-green-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-lg">
                                     <div className="relative z-10 max-w-lg">
-                                        <p className="text-green-100 font-medium mb-2 uppercase tracking-wider text-sm">Civic Hero Program</p>
+                                        <p className="text-green-100 font-medium mb-2 uppercase tracking-wider text-sm">{t.tabs.dashboard} Program</p>
                                         <h2 className="text-3xl md:text-4xl font-bold font-serif mb-4 leading-tight">
-                                            Your Super Power is to Share Knowledge.
+                                            {t.hero.superPower}
                                         </h2>
                                         <p className="text-green-50 text-lg mb-8 opacity-90">
-                                            Enlighten others. Earn badges. Build a better democracy.
+                                            {t.hero.enlighten}
                                         </p>
 
                                         <div className="bg-white/10 backdrop-blur-md p-1 rounded-xl flex items-center border border-white/20 max-w-md">
@@ -133,27 +111,27 @@ export default function CivicBadge() {
                                                 {referralCode}
                                             </div>
                                             <div className="flex-1 px-4 text-green-100 text-sm font-medium">
-                                                Your Referral Code
+                                                {t.hero.referralLabel}
                                             </div>
                                             <button
                                                 onClick={copyReferral}
                                                 className="bg-white text-green-700 px-4 py-2 rounded-lg font-bold hover:bg-green-50 transition-colors flex items-center gap-2 text-sm"
                                             >
-                                                <Copy className="w-4 h-4" /> Copy
+                                                <Copy className="w-4 h-4" /> {t.hero.copy}
                                             </button>
                                         </div>
+                                        {/* Decorative circles */}
+                                        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/4 translate-x-1/4"></div>
+                                        <div className="absolute bottom-0 right-12 w-32 h-32 bg-yellow-400 opacity-20 rounded-full blur-2xl"></div>
                                     </div>
-                                    {/* Decorative circles */}
-                                    <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/4 translate-x-1/4"></div>
-                                    <div className="absolute bottom-0 right-12 w-32 h-32 bg-yellow-400 opacity-20 rounded-full blur-2xl"></div>
                                 </div>
 
-                                {/* Referral Status (Matches Levels in 13.png) */}
+                                {/* Referral Status */}
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     {[
-                                        { label: 'Civic Educator', req: '2+ Referrals', active: referralCount >= 2, color: 'bg-emerald-100 text-emerald-800' },
-                                        { label: 'Responsible Voter', req: '5+ Referrals', active: referralCount >= 5, color: 'bg-blue-100 text-blue-800' },
-                                        { label: 'Civic Super Hero', req: '10+ Referrals', active: referralCount >= 10, color: 'bg-amber-100 text-amber-800' },
+                                        { label: t.hero.levels.educator, req: `2+ ${t.hero.levels.refs}`, active: referralCount >= 2, color: 'bg-emerald-100 text-emerald-800' },
+                                        { label: t.hero.levels.responsible, req: `5+ ${t.hero.levels.refs}`, active: referralCount >= 5, color: 'bg-blue-100 text-blue-800' },
+                                        { label: t.hero.levels.superHero, req: `10+ ${t.hero.levels.refs}`, active: referralCount >= 10, color: 'bg-amber-100 text-amber-800' },
                                     ].map((badge, idx) => (
                                         <div key={idx} className={`p-4 rounded-xl border-2 transition-all ${badge.active ? `${badge.color} border-transparent` : 'bg-white border-gray-100 opacity-50'}`}>
                                             <div className="text-xs font-bold uppercase opacity-60 mb-1">{badge.req}</div>
@@ -164,17 +142,17 @@ export default function CivicBadge() {
                             </>
                         )}
 
-                        {/* --- VOTER RIGHTS (Matches 8.png) --- */}
+                        {/* --- VOTER RIGHTS --- */}
                         {activeTab === 'rights' && (
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
-                                    <Award className="text-green-600" /> Voter Rights
+                                    <Award className="text-green-600" /> {t.rights.title}
                                 </h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    {VOTER_RIGHTS.map((right, idx) => (
+                                    {t.rights.items.map((right, idx) => (
                                         <div key={idx} className="bg-slate-50 p-6 rounded-2xl hover:bg-green-50 transition-colors group border border-transparent hover:border-green-100">
                                             <div className="mb-4 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                                {right.icon}
+                                                {rightsIcons[idx] || <Award className="w-6 h-6 text-gray-600" />}
                                             </div>
                                             <h3 className="font-bold text-lg text-gray-900 mb-2">{right.title}</h3>
                                             <p className="text-gray-600 text-sm leading-relaxed">{right.desc}</p>
@@ -184,14 +162,14 @@ export default function CivicBadge() {
                             </div>
                         )}
 
-                        {/* --- RESPONSIBILITIES (Matches 9.png) --- */}
+                        {/* --- RESPONSIBILITIES --- */}
                         {activeTab === 'responsibilities' && (
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
-                                    <CheckCircle2 className="text-green-600" /> Voter Responsibilities
+                                    <CheckCircle2 className="text-green-600" /> {t.responsibilities.title}
                                 </h2>
                                 <div className="space-y-4">
-                                    {RESPONSIBILITIES.map((resp, idx) => (
+                                    {t.responsibilities.items.map((resp, idx) => (
                                         <div key={idx} className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
                                             <div className="bg-orange-100 text-orange-600 font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0">
                                                 {idx + 1}
@@ -206,41 +184,41 @@ export default function CivicBadge() {
                             </div>
                         )}
 
-                        {/* --- NID PROCESS (Matches 16.png) --- */}
+                        {/* --- NID PROCESS --- */}
                         {activeTab === 'nid' && (
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
-                                    <FileText className="text-green-600" /> How to Get a NID
+                                    <FileText className="text-green-600" /> {t.nid.title}
                                 </h2>
                                 <div className="relative border-l-2 border-green-100 pl-8 ml-4 space-y-8">
-                                    {NID_STEPS.map((step, idx) => (
+                                    {t.nid.steps.map((step, idx) => (
                                         <div key={idx} className="relative">
                                             <div className="absolute -left-[41px] top-0 bg-white border-2 border-green-500 w-6 h-6 rounded-full flex items-center justify-center">
                                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                             </div>
-                                            <h3 className="font-bold text-lg text-gray-900">{step.step}. {step.title}</h3>
+                                            <h3 className="font-bold text-lg text-gray-900">{idx + 1}. {step.title}</h3>
                                             <p className="text-gray-500 mt-1">{step.desc}</p>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="mt-8">
                                     <a href="https://services.nidw.gov.bd/" target="_blank" className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-200">
-                                        Visit NID Website <ChevronRight className="w-4 h-4" />
+                                        {t.nid.btn} <ChevronRight className="w-4 h-4" />
                                     </a>
                                 </div>
                             </div>
                         )}
 
-                        {/* --- VOTER RULES (Matches 24.png) --- */}
+                        {/* --- VOTER RULES --- */}
                         {activeTab === 'rules' && (
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
                                 <h2 className="text-2xl font-bold text-gray-800 font-serif mb-6 flex items-center gap-2">
-                                    <AlertCircle className="text-green-600" /> Rules for a Voter
+                                    <AlertCircle className="text-green-600" /> {t.rules.title}
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {RULES.map((rule, idx) => (
+                                    {t.rules.items.map((rule, idx) => (
                                         <div key={idx} className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-                                            <div className="text-yellow-800 font-bold mb-1">{rule.rule}</div>
+                                            <div className="text-yellow-800 font-bold mb-1">{rule.title}</div>
                                             <div className="text-yellow-700 text-sm">{rule.desc}</div>
                                         </div>
                                     ))}
@@ -253,23 +231,24 @@ export default function CivicBadge() {
                     {/* Right Column (Sidebar) */}
                     <div className="space-y-6">
 
-                        {/* Interactive Quiz (Matches 21.png) */}
+                        {/* Interactive Quiz */}
                         <div className="bg-white rounded-3xl p-6 shadow-custom border border-gray-100 text-center relative overflow-hidden">
                             <div className="relative z-10">
                                 <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                                     <HelpCircle className="w-8 h-8" />
                                 </div>
-                                <h3 className="font-bold text-xl text-gray-900 mb-2 font-serif">Citizen's Duty?</h3>
-                                <p className="text-gray-500 text-sm mb-6">Answer correctly to earn your daily badge.</p>
+                                <h3 className="font-bold text-xl text-gray-900 mb-2 font-serif">{t.quiz.title}</h3>
+                                <p className="text-gray-500 text-sm mb-6">{t.quiz.desc}</p>
 
                                 {quizAnswered ? (
                                     <div className="bg-green-50 text-green-700 p-4 rounded-xl font-bold border border-green-200 animate-in zoom-in">
-                                        Correct! You are a dutiful citizen.
+                                        {t.quiz.success}
                                         <Award className="w-8 h-8 mx-auto mt-2 text-yellow-500" />
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
-                                        {questions[currentQuestion].options.map((opt, idx) => (
+                                        <div className="text-left text-sm font-medium mb-2 text-gray-700">{t.quiz.question}</div>
+                                        {t.quiz.options.map((opt, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => handleQuizOption(idx)}
@@ -288,24 +267,24 @@ export default function CivicBadge() {
                         {/* Quick Stats / Gamification Sidebar */}
                         <div className="bg-slate-900 rounded-3xl p-6 text-white shadow-xl">
                             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                <Award className="text-yellow-400" /> Your Impact
+                                <Award className="text-yellow-400" /> {t.stats.impact}
                             </h3>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                                    <span className="text-slate-400 text-sm">Badges Earned</span>
+                                    <span className="text-slate-400 text-sm">{t.stats.badges}</span>
                                     <span className="font-bold text-xl">3</span>
                                 </div>
                                 <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                                    <span className="text-slate-400 text-sm">Referrals</span>
+                                    <span className="text-slate-400 text-sm">{t.stats.referrals}</span>
                                     <span className="font-bold text-xl">{referralCount}</span>
                                 </div>
                                 <div className="flex justify-between items-center border-b border-slate-700 pb-2">
-                                    <span className="text-slate-400 text-sm">NID Verified</span>
+                                    <span className="text-slate-400 text-sm">{t.stats.verified}</span>
                                     <span className="font-bold text-green-400">Yes</span>
                                 </div>
                             </div>
                             <button className="w-full mt-6 bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-colors">
-                                View Leaderboard
+                                {t.stats.leaderboard}
                             </button>
                         </div>
 

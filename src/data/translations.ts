@@ -124,6 +124,106 @@ export const translations = {
                 { title: "2. Use License", content: "This website is for informational purposes only. You may not use the data for any commercial purpose or attempt to reverse engineer any software contained on the site." },
                 { title: "3. Disclaimer", content: "The materials on Amar Ballot are provided on an 'as is' basis. We make no warranties, expressed or implied, regarding the accuracy or reliability of the data." }
             ]
+        },
+        civicBadge: {
+            welcome: "Welcome",
+            subtitle: "Your hub for civic engagement, learning, and rewards.",
+            tabs: {
+                dashboard: "Civic Hero",
+                rights: "Voter Rights",
+                responsibilities: "Responsibilities",
+                nid: "Get NID",
+                rules: "Voter Rules"
+            },
+            hero: {
+                superPower: "Your Super Power is to Share Knowledge.",
+                enlighten: "Enlighten others. Earn badges. Build a better democracy.",
+                referralLabel: "Your Referral Code",
+                copy: "Copy",
+                levels: {
+                    educator: "Civic Educator",
+                    responsible: "Responsible Voter",
+                    superHero: "Civic Super Hero",
+                    refs: "Referrals"
+                }
+            },
+            rights: {
+                title: "Voter Rights",
+                items: [
+                    { title: "Right to Vote Freely", desc: "No one can force you to vote a certain way. You make your own choice." },
+                    { title: "Right to Secrecy", desc: "Your vote is private. No one should know who you voted for." },
+                    { title: "Right to Information", desc: "You have the right to know about candidates and election issues." },
+                    { title: "Accessibility (PWD)", desc: "Polling stations must provide support for persons with disabilities." }
+                ]
+            },
+            responsibilities: {
+                title: "Voter Responsibilities",
+                items: [
+                    { title: "Verify Registration", desc: "Ensure you are registered and eligible to vote." },
+                    { title: "Follow the Law", desc: "Comply with all election rules and conduct." },
+                    { title: "Avoid Influence", desc: "Vote based on your own views, not external pressure." },
+                    { title: "Respect Privacy", desc: "Do not ask others who they voted for." }
+                ]
+            },
+            nid: {
+                title: "How to Get a NID",
+                steps: [
+                    { title: "Online Pre-Registration", desc: "Visit NID website, fill form, submit documents." },
+                    { title: "Visit Election Office", desc: "Go to designated center with application copy." },
+                    { title: "Biometric Collection", desc: "Provide fingerprints, photo, and signature." },
+                    { title: "Verification", desc: "Authorities verify your data and documents." },
+                    { title: "Receive NID", desc: "Collect your Smart NID card or download copy." }
+                ],
+                btn: "Visit NID Website"
+            },
+            rules: {
+                title: "Rules for a Voter",
+                items: [
+                    { title: "Be Eligible", desc: "Must be a citizen and 18+ years old." },
+                    { title: "One Person, One Vote", desc: "Voting more than once is a crime." },
+                    { title: "No Campaigning", desc: "No political activity inside polling centers." },
+                    { title: "Bring ID", desc: "Carry your NID or voter slip." }
+                ]
+            },
+            quiz: {
+                title: "Citizen's Duty?",
+                desc: "Answer correctly to earn your daily badge.",
+                question: "Which of the following is a citizen's duty?",
+                options: ["Pay Taxes", "Ignore Election", "Spread Misinformation", "Avoid Service"],
+                success: "Correct! You are a dutiful citizen.",
+                failure: "Try again! Think about what helps the nation."
+            },
+            stats: {
+                impact: "Your Impact",
+                badges: "Badges Earned",
+                referrals: "Referrals",
+                verified: "NID Verified",
+                leaderboard: "View Leaderboard"
+            }
+        },
+        videoTutorials: {
+            title: "VIDEO",
+            subtitle: "Watch tutorials and messages",
+            videos: [
+                "How to Give Vote",
+                "Key to Country is in Your Hands",
+                "Message from Chief Advisor",
+                "Campaign in Educational Institutions"
+            ]
+        },
+        aboutUs: {
+            title: "About Amar Ballot",
+            desc: "Empowering citizens with information to make every vote count. We are building a smarter, more transparent democratic process for Bangladesh.",
+            features: {
+                mission: { title: "Our Mission", desc: "To bridge the gap between voters and information, ensuring every citizen has easy access to candidate details, voting centers, and election procedures." },
+                vision: { title: "Community First", desc: "We believe in the power of an informed community. Amar Ballot is designed to be accessible, unbiased, and user-friendly for all ages." },
+                trust: { title: "Trusted Data", desc: "We verify all information against official sources to combat misinformation and provide you with data you can trust during election season." }
+            },
+            story: {
+                title: "Why We Started",
+                desc: "Voting shouldn't be complicated. We noticed that many citizens, especially first-time voters, struggle to find their polling centers or know who is running in their constituency. Amar Ballot was born from a desire to simplify this journey and encourage active civic participation.",
+                alt: "Team Illustration"
+            }
         }
     },
     bn: {
@@ -251,6 +351,140 @@ export const translations = {
                 { title: "২. ব্যবহারের লাইসেন্স", content: "এই ওয়েবসাইটটি শুধুমাত্র তথ্যমূলক উদ্দেশ্যে। আপনি কোনো বাণিজ্যিক উদ্দেশ্যে ডেটা ব্যবহার করতে পারবেন না বা সাইটে থাকা কোনো সফটওয়্যার রিভার্স ইঞ্জিনিয়ারিং করার চেষ্টা করতে পারবেন না।" },
                 { title: "৩. দাবিত্যাগ", content: "অমর ব্যালটের উপকরণগুলি 'যেমন আছে' ভিত্তিতে প্রদান করা হয়। আমরা ডেটার নির্ভুলতা বা নির্ভরযোগ্যতা সম্পর্কে কোনো প্রকাশ্য বা গোপন ওয়ারেন্টি প্রদান করি না।" }
             ]
+        },
+        civicBadge: {
+            welcome: "স্বাগতম",
+            subtitle: "নাগরিক সম্পৃক্ততা, শিক্ষা এবং পুরস্কারের জন্য আপনার কেন্দ্র।",
+            tabs: {
+                dashboard: "সিভিক হিরো",
+                rights: "ভোটারের অধিকার",
+                responsibilities: "দায়িত্বসমূহ",
+                nid: "এনআইডি পান",
+                rules: "নির্বাচনী নিয়ম"
+            },
+            hero: {
+                superPower: "আপনার সুপার পাওয়ার হলো জ্ঞান শেয়ার করা।",
+                enlighten: "অন্যদের সচেতন করুন। ব্যাজ অর্জন করুন। একটি উন্নত গণতন্ত্র গড়ুন।",
+                referralLabel: "আপনার রেফারেল কোড",
+                copy: "কপি করুন",
+                levels: {
+                    educator: "সিভিক এডুকেটর",
+                    responsible: "দায়িত্বশীল ভোটার",
+                    superHero: "সিভিক সুপার হিরো",
+                    refs: "রেফারেল"
+                }
+            },
+            rights: {
+                title: "ভোটারের অধিকার",
+                items: [
+                    { title: "স্বাধীনভাবে ভোট দেওয়ার অধিকার", desc: "কেউ আপনাকে নির্দিষ্টভাবে ভোট দিতে বাধ্য করতে পারে না। আপনি আপনার নিজের পছন্দ করবেন।" },
+                    { title: "গোপনীয়তার অধিকার", desc: "আপনার ভোট গোপন। আপনি কাকে ভোট দিয়েছেন তা কারো জানা উচিত নয়।" },
+                    { title: "তথ্যের অধিকার", desc: "প্রার্থী এবং নির্বাচনী বিষয় সম্পর্কে জানার অধিকার আপনার আছে।" },
+                    { title: "অ্যাক্সেসযোগ্যতা (PWD)", desc: "ভোটকেন্দ্রে প্রতিবন্ধী ব্যক্তিদের জন্য সহায়তার ব্যবস্থা থাকতে হবে।" }
+                ]
+            },
+            responsibilities: {
+                title: "ভোটারের দায়িত্ব",
+                items: [
+                    { title: "নিবন্ধন যাচাই করুন", desc: "নিশ্চিত করুন যে আপনি নিবন্ধিত এবং ভোট দেওয়ার যোগ্য।" },
+                    { title: "আইন মেনে চলুন", desc: "নির্বাচনের সকল নিয়ম ও আচরণবিধি মেনে চলুন।" },
+                    { title: "প্রভাব এড়িয়ে চলুন", desc: "বাহ্যিক চাপে নয়, নিজের মতামতের ভিত্তিতে ভোট দিন।" },
+                    { title: "গোপনীয়তা শ্রদ্ধা করুন", desc: "অন্যদের জিজ্ঞাসা করবেন না তারা কাকে ভোট দিয়েছে।" }
+                ]
+            },
+            nid: {
+                title: "কিভাবে এনআইডি পাবেন",
+                steps: [
+                    { title: "অনলাইন প্রাক-নিবন্ধন", desc: "এনআইডি ওয়েবসাইট ভিজিট করুন, ফর্ম পূরণ করুন, নথি জমা দিন।" },
+                    { title: "নির্বাচন অফিস ভিজিট", desc: "আবেদনের কপি নিয়ে নির্ধারিত কেন্দ্রে যান।" },
+                    { title: "বায়োমেট্রিক সংগ্রহ", desc: "আঙ্গুলের ছাপ, ছবি এবং স্বাক্ষর প্রদান করুন।" },
+                    { title: "যাচাইকরণ", desc: "কর্তৃপক্ষ আপনার তথ্য এবং নথি যাচাই করবে।" },
+                    { title: "এনআইডি গ্রহণ", desc: "আপনার স্মার্ট এনআইডি কার্ড সংগ্রহ করুন বা কপি ডাউনলোড করুন।" }
+                ],
+                btn: "এনআইডি ওয়েবসাইট ভিজিট"
+            },
+            rules: {
+                title: "ভোটারের জন্য নিয়মাবলী",
+                items: [
+                    { title: "যোগ্য হতে হবে", desc: "অবশ্যই নাগরিক এবং ১৮+ বছর বয়সী হতে হবে।" },
+                    { title: "এক ব্যক্তি, এক ভোট", desc: "একাধিকবার ভোট দেওয়া অপরাধ।" },
+                    { title: "প্রচারণা নিষেধ", desc: "ভোটকেন্দ্রের ভেতরে কোনো রাজনৈতিক কার্যকলাপ চলবে না।" },
+                    { title: "আইডি আনুন", desc: "আপনার এনআইডি বা ভোটার স্লিপ সাথে রাখুন।" }
+                ]
+            },
+            quiz: {
+                title: "নাগরিক দায়িত্ব?",
+                desc: "দৈনিক ব্যাজ পেতে সঠিক উত্তর দিন।",
+                question: "নিচের কোনটি একজন নাগরিকের দায়িত্ব?",
+                options: ["কর প্রদান", "নির্বাচন উপেক্ষা করা", "গুজব ছড়ানো", "সেবা এড়িয়ে চলা"],
+                success: "সঠিক! আপনি একজন দায়িত্বশীল নাগরিক।",
+                failure: "আবার চেষ্টা করুন! দেশের জন্য কোনটি ভালো তা ভাবুন।"
+            },
+            stats: {
+                impact: "আপনার প্রভাব",
+                badges: "অর্জিত ব্যাজ",
+                referrals: "রেফারেল",
+                verified: "এনআইডি যাচাইকৃত",
+                leaderboard: "লিডারবোর্ড দেখুন"
+            }
+        },
+        videoTutorials: {
+            title: "ভিডিও",
+            subtitle: "টিউটোরিয়াল এবং বার্তা দেখুন",
+            videos: [
+                "যেভাবে ভোট দিবেন",
+                "দেশের চাবি আপনার হাতে",
+                "মাননীয় প্রধান উপদেষ্টার বার্তা",
+                "শিক্ষা প্রতিষ্ঠানে প্রচারণা"
+            ]
+        },
+        aboutUs: {
+            title: "অমর ব্যালট সম্পর্কে",
+            desc: "প্রতিটি ভোট নিশ্চিত করতে নাগরিকদের তথ্যে ক্ষমতায়ন। আমরা বাংলাদেশের জন্য একটি স্মার্ট, আরও স্বচ্ছ গণতান্ত্রিক প্রক্রিয়া গড়ছি।",
+            features: {
+                mission: { title: "আমাদের লক্ষ্য", desc: "ভোটার এবং তথ্যের মধ্যে দূরত্ব ঘোচানো, নিশ্চিত করা যে প্রতিটি নাগরিক প্রার্থী, ভোটকেন্দ্র এবং নির্বাচনী প্রক্রিয়া সহজে জানতে পারে।" },
+                vision: { title: "কমিউনিটি সবার আগে", desc: "আমরা একটি সচেতন কমিউনিটির শক্তিতে বিশ্বাস করি। অমর ব্যালট সব বয়সের মানুষের জন্য সহজ, নিরপেক্ষ এবং ব্যবহারকারী-বান্ধব করার জন্য ডিজাইন করা হয়েছে।" },
+                trust: { title: "বিশ্বস্ত তথ্য", desc: "আমরা বিভ্রান্তি রোধ করতে অফিসিয়াল উৎসের বিপরীতে সমস্ত তথ্য যাচাই করি এবং নির্বাচনের সময় আপনাকে বিশ্বস্ত তথ্য প্রদান করি।" }
+            },
+            story: {
+                title: "কেন আমরা শুরু করেছি",
+                desc: "ভোট দেওয়া জটিল হওয়া উচিত নয়। আমরা লক্ষ্য করেছি যে অনেক নাগরিক, বিশেষ করে নতুন ভোটাররা, তাদের ভোটকেন্দ্র খুঁজে পেতে বা তাদের এলাকায় কে প্রার্থী তা জানতে সমস্যায় পড়েন। অমর ব্যালট ছিল এই যাত্রা সহজ করতে এবং সক্রিয় নাগরিক অংশগ্রহণে উৎসাহিত করতে।",
+                alt: "দলের চিত্র"
+            }
+        },
+        candidateList: {
+            title: "জনমত জরিপ ২০২৬",
+            subtitle: "লাইভ নির্বাচনের জনমত জরিপ ফলাফল",
+            totalVotes: "সর্বমোট ভোট",
+            download: "ফলাফল কার্ড ডাউনলোড",
+            reviews: {
+                title: "ভোটারদের মতামত",
+                sort: "ফলাফল সাজান",
+                newest: "নতুন প্রথমে",
+                oldest: "পুরাতন প্রথমে",
+                allParties: "সকল দল",
+                headers: {
+                    voter: "ভোটার",
+                    seat: "আসন",
+                    party: "সমর্থিত দল",
+                    review: "মতামত / মন্তব্য",
+                    time: "সময়"
+                },
+                empty: "আপনার ফিল্টারের সাথে কোন মতামত মিলেনি।",
+                noVotes: "এই নির্বাচনে এখনও কোন ভোট পড়েনি।"
+            },
+            filters: {
+                division: "সকল বিভাগ",
+                district: "সকল জেলা",
+                area: "সকল আসন",
+                reset: "রিসেট ফিল্টার"
+            },
+            resultTitles: {
+                area: "ফলাফল: {area} (আসন)",
+                district: "ফলাফল: {district} (জেলা)",
+                division: "ফলাফল: {division} (বিভাগ)",
+                national: "জাতীয় জনমত জরিপ ফলাফল"
+            }
         }
     }
 };
