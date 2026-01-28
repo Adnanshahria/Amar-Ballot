@@ -32,7 +32,7 @@ export default function VideoTutorials() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full px-2 sm:px-0">
                     {videoList.map((video, index) => (
-                        <div key={index} className="bg-white p-3 rounded-2xl shadow-lg border border-green-100 transform transition-all hover:-translate-y-1 hover:shadow-xl">
+                        <div key={index} className="bg-white p-3 rounded-2xl shadow-lg border border-green-100 transform transition-all md:hover:-translate-y-1 md:hover:shadow-xl">
                             <YouTubeEmbed videoId={video.id} title={video.title} />
                             <h3 className="mt-4 text-lg font-bold text-gray-800 font-serif px-1 min-h-[3.5rem] line-clamp-2" title={video.title}>{video.title}</h3>
                         </div>
