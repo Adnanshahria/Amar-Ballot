@@ -14,7 +14,7 @@ export default function YouTubeEmbed({ videoId, title }: YouTubeEmbedProps) {
             <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden bg-black animate-in fade-in duration-300">
                 <iframe
                     className="absolute top-0 left-0 w-full h-full"
-                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`}
                     title={title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -24,9 +24,11 @@ export default function YouTubeEmbed({ videoId, title }: YouTubeEmbedProps) {
     }
 
     return (
-        <div
-            className="relative w-full pb-[56.25%] rounded-xl overflow-hidden bg-black cursor-pointer group"
+        <button
+            type="button"
+            className="relative w-full pb-[56.25%] rounded-xl overflow-hidden bg-black cursor-pointer group block border-0 p-0 focus:outline-none focus:ring-2 focus:ring-green-500"
             onClick={() => setIsPlaying(true)}
+            aria-label={`Play video: ${title}`}
         >
             {/* Thumbnail */}
             <img
@@ -44,8 +46,8 @@ export default function YouTubeEmbed({ videoId, title }: YouTubeEmbedProps) {
 
             {/* Title Overlay (Optional) */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                <p className="text-white font-medium text-sm truncate">{title}</p>
+                <p className="text-white font-medium text-sm truncate text-left">{title}</p>
             </div>
-        </div>
+        </button>
     );
 }
