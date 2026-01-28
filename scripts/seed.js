@@ -46,6 +46,22 @@ async function main() {
             args: [],
         });
 
+        // Insert initial election updates
+        await db.execute({
+            sql: `INSERT OR IGNORE INTO election_updates (title, content, image_url, published_at) VALUES
+                ('Election Schedule Announced', 'The 13th National Parliamentary Election will be held on January 7, 2026. The Chief Election Commissioner announced the schedule today.', 'https://placehold.co/600x400', CURRENT_TIMESTAMP),
+                ('Voter List Update', 'The final voter list has been published. Please check your details at your local election office or online.', 'https://placehold.co/600x400', CURRENT_TIMESTAMP)`,
+            args: [],
+        });
+
+        // Insert initial rumors
+        await db.execute({
+            sql: `INSERT OR IGNORE INTO rumors (title, description, status, source) VALUES
+                ('Election Postponed?', 'Social media posts claiming the election has been postponed are FALSE. The election will proceed as scheduled.', 'fake', 'https://factcheck.org/example'),
+                ('New Vote Centers Added', 'The EC has added 500 new vote centers in remote areas. This is TRUE.', 'verified', 'https://ec.gov.bd')`,
+            args: [],
+        });
+
         console.log("✅ Database seeded successfully!");
     } catch (e) {
         console.error("❌ Seeding failed:", e);

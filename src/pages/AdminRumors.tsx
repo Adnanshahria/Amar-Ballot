@@ -49,7 +49,7 @@ export default function AdminRumors() {
                 </div>
                 <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center gap-2 bg-orange-600 text-white px-5 py-2.5 rounded-xl hover:bg-orange-700 transition-colors font-medium shadow-sm"
+                    className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl hover:bg-purple-700 transition-colors font-medium shadow-sm"
                 >
                     <Plus className="w-5 h-5" />
                     Add Rumor Check
@@ -134,7 +134,7 @@ export default function AdminRumors() {
                                     value={formData.source} onChange={e => setFormData({ ...formData, source: e.target.value })} />
                             </div>
                             <div className="flex justify-end pt-4">
-                                <button type="submit" className="bg-orange-600 text-white px-6 py-2.5 rounded-lg hover:bg-orange-700 font-medium flex items-center gap-2">
+                                <button type="submit" className="bg-purple-600 text-white px-6 py-2.5 rounded-lg hover:bg-purple-700 font-medium flex items-center gap-2">
                                     <Save className="w-4 h-4" /> Save Record
                                 </button>
                             </div>

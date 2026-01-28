@@ -47,7 +47,7 @@ export default function AdminUpdates() {
                 </div>
                 <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm"
+                    className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl hover:bg-purple-700 transition-colors font-medium shadow-sm"
                 >
                     <Plus className="w-5 h-5" />
                     Post Update
@@ -151,7 +151,7 @@ export default function AdminUpdates() {
                                     value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} />
                             </div>
                             <div className="flex justify-end pt-4">
-                                <button type="submit" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2">
+                                <button type="submit" className="bg-purple-600 text-white px-6 py-2.5 rounded-lg hover:bg-purple-700 font-medium flex items-center gap-2">
                                     <Save className="w-4 h-4" /> Post
                                 </button>
                             </div>

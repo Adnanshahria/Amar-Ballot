@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Trash2, MapPin, X, Save } from 'lucide-react';
-import { getVoteCenters, addVoteCenter, deleteVoteCenter } from '../lib/api';
+import { getVoteCenters, addVoteCenter, deleteVoteCenter, updateVoteCenter } from '../lib/api';
 import { SEAT_SYSTEM } from '../lib/seats';
 
 export default function AdminCenters() {
     const [centers, setCenters] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [editingId, setEditingId] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     // Form State
@@ -39,6 +40,35 @@ export default function AdminCenters() {
         }
     };
 
+    const handleEdit = (center: any) => {
+        setEditingId(center.id);
+        setFormData({
+            name: center.name,
+            name_bn: center.name_bn || '',
+            address: center.address,
+            address_bn: center.address_bn || '',
+            division: center.division,
+            district: center.district,
+            area: center.area,
+            latitude: center.latitude.toString(),
+            longitude: center.longitude.toString(),
+            capacity: center.capacity.toString()
+        });
+
+        // Trigger cascading updates
+        if (center.division) {
+            const divData = SEAT_SYSTEM.data.find(d => d.division === center.division);
+            setAvailableDistricts(divData ? divData.districts : []);
+
+            if (center.district && divData) {
+                const distData = divData.districts.find(d => d.district_name === center.district);
+                setAvailableAreas(distData ? distData.constituencies : []);
+            }
+        }
+
+        setIsAddModalOpen(true);
+    };
+
     const handleDivisionChange = (division: string) => {
         setFormData({ ...formData, division, district: '', area: '' });
         const divData = SEAT_SYSTEM.data.find(d => d.division === division);
@@ -54,26 +84,39 @@ export default function AdminCenters() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const result = await addVoteCenter({
+
+        const payload = {
             ...formData,
             latitude: parseFloat(formData.latitude) || 0,
             longitude: parseFloat(formData.longitude) || 0,
             capacity: parseInt(formData.capacity) || 0
-        });
+        };
+
+        let result;
+        if (editingId) {
+            result = await updateVoteCenter(editingId, payload);
+        } else {
+            result = await addVoteCenter(payload);
+        }
 
         if (result.success) {
             setIsAddModalOpen(false);
+            setEditingId(null);
             fetchCenters();
-            // Reset form
-            setFormData({
-                name: '', name_bn: '',
-                address: '', address_bn: '',
-                division: '', district: '', area: '',
-                latitude: '', longitude: '', capacity: ''
-            });
+            resetForm();
         } else {
-            alert('Failed to add vote center');
+            alert('Failed to save vote center');
         }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            name: '', name_bn: '',
+            address: '', address_bn: '',
+            division: '', district: '', area: '',
+            latitude: '', longitude: '', capacity: ''
+        });
+        setEditingId(null);
     };
 
     const filteredCenters = centers.filter(c =>
@@ -82,14 +125,14 @@ export default function AdminCenters() {
     );
 
     return (
-        <div className="p-8 max-w-7xl mx-auto">
+        <div>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Manage Vote Centers</h1>
                     <p className="text-gray-600">Add, edit, or remove polling stations</p>
                 </div>
                 <button
-                    onClick={() => setIsAddModalOpen(true)}
+                    onClick={() => { resetForm(); setIsAddModalOpen(true); }}
                     className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl hover:bg-purple-700 transition-colors font-medium shadow-sm hover:shadow-md"
                 >
                     <Plus className="w-5 h-5" />
@@ -152,12 +195,22 @@ export default function AdminCenters() {
                                             {center.latitude.toFixed(4)}, {center.longitude.toFixed(4)}
                                         </td>
                                         <td className="p-4 text-right">
-                                            <button
-                                                onClick={() => handleDelete(center.id)}
-                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(center)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <div className="w-4 h-4">✏️</div>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(center.id)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -167,13 +220,13 @@ export default function AdminCenters() {
                 </div>
             </div>
 
-            {/* Add Center Modal */}
+            {/* Add/Edit Center Modal */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsAddModalOpen(false)} />
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10 animate-in zoom-in-95 duration-200">
                         <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-20">
-                            <h2 className="text-xl font-bold text-gray-900">Add Vote Center</h2>
+                            <h2 className="text-xl font-bold text-gray-900">{editingId ? 'Edit Vote Center' : 'Add Vote Center'}</h2>
                             <button onClick={() => setIsAddModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-5 h-5" /></button>
                         </div>
 
@@ -281,7 +334,7 @@ export default function AdminCenters() {
                                     className="px-6 py-2.5 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 shadow-sm transition-colors flex items-center gap-2"
                                 >
                                     <Save className="w-4 h-4" />
-                                    Save Center
+                                    {editingId ? 'Update Center' : 'Save Center'}
                                 </button>
                             </div>
                         </form>

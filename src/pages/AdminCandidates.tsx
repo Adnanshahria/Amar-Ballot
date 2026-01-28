@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Trash2, X, Save, CheckCircle, AlertCircle } from 'lucide-react';
-import { getCandidates, addCandidate, deleteCandidate } from '../lib/api';
+import { getCandidates, addCandidate, deleteCandidate, updateCandidate } from '../lib/api';
 import { SEAT_SYSTEM } from '../lib/seats';
 
 export default function AdminCandidates() {
     const [candidates, setCandidates] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [editingId, setEditingId] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     // Form State
@@ -15,7 +16,7 @@ export default function AdminCandidates() {
         image_url: 'https://placehold.co/400',
         manifesto: '', manifesto_bn: '',
         education: '', experience: '', age: '', status: 'clean',
-        division: '', district: '', area: ''
+        division: '', district: '', area: '', alliance: ''
     });
 
     // Cascading Dropdown State
@@ -40,6 +41,41 @@ export default function AdminCandidates() {
         }
     };
 
+    const handleEdit = (candidate: any) => {
+        setEditingId(candidate.id);
+        setFormData({
+            name: candidate.name,
+            name_bn: candidate.name_bn || '',
+            party: candidate.party,
+            party_bn: candidate.party_bn || '',
+            symbol: candidate.symbol,
+            image_url: candidate.image_url,
+            manifesto: candidate.manifesto || '',
+            manifesto_bn: candidate.manifesto_bn || '',
+            education: candidate.education,
+            experience: candidate.experience,
+            age: candidate.age?.toString() || '',
+            status: candidate.status,
+            division: candidate.division,
+            district: candidate.district,
+            area: candidate.area,
+            alliance: candidate.alliance || ''
+        });
+
+        // Trigger cascading updates
+        if (candidate.division) {
+            const divData = SEAT_SYSTEM.data.find(d => d.division === candidate.division);
+            setAvailableDistricts(divData ? divData.districts : []);
+
+            if (candidate.district && divData) {
+                const distData = divData.districts.find(d => d.district_name === candidate.district);
+                setAvailableAreas(distData ? distData.constituencies : []);
+            }
+        }
+
+        setIsAddModalOpen(true);
+    };
+
     const handleDivisionChange = (division: string) => {
         setFormData({ ...formData, division, district: '', area: '' });
         const divData = SEAT_SYSTEM.data.find(d => d.division === division);
@@ -55,25 +91,38 @@ export default function AdminCandidates() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const result = await addCandidate({
+
+        const payload = {
             ...formData,
             age: parseInt(formData.age) || 0
-        });
+        };
+
+        let result;
+        if (editingId) {
+            result = await updateCandidate(editingId, payload);
+        } else {
+            result = await addCandidate(payload);
+        }
 
         if (result.success) {
             setIsAddModalOpen(false);
+            setEditingId(null);
             fetchCandidates();
-            // Reset form
-            setFormData({
-                name: '', name_bn: '', party: '', party_bn: '', symbol: '',
-                image_url: 'https://placehold.co/400',
-                manifesto: '', manifesto_bn: '',
-                education: '', experience: '', age: '', status: 'clean',
-                division: '', district: '', area: ''
-            });
+            resetForm();
         } else {
-            alert('Failed to add candidate');
+            alert('Failed to save candidate');
         }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            name: '', name_bn: '', party: '', party_bn: '', symbol: '',
+            image_url: 'https://placehold.co/400',
+            manifesto: '', manifesto_bn: '',
+            education: '', experience: '', age: '', status: 'clean',
+            division: '', district: '', area: '', alliance: ''
+        });
+        setEditingId(null);
     };
 
     const filteredCandidates = candidates.filter(c =>
@@ -83,14 +132,14 @@ export default function AdminCandidates() {
     );
 
     return (
-        <div className="p-8 max-w-7xl mx-auto">
+        <div>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Manage Candidates</h1>
                     <p className="text-gray-600">Add, edit, or remove election candidates</p>
                 </div>
                 <button
-                    onClick={() => setIsAddModalOpen(true)}
+                    onClick={() => { resetForm(); setIsAddModalOpen(true); }}
                     className="flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl hover:bg-green-700 transition-colors font-medium shadow-sm hover:shadow-md"
                 >
                     <Plus className="w-5 h-5" />
@@ -150,12 +199,22 @@ export default function AdminCandidates() {
                                         <td className="p-4 text-gray-600">{candidate.area}</td>
                                         <td className="p-4 text-gray-600">{candidate.symbol}</td>
                                         <td className="p-4 text-right">
-                                            <button
-                                                onClick={() => handleDelete(candidate.id)}
-                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(candidate)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <div className="w-4 h-4">✏️</div>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(candidate.id)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -165,13 +224,13 @@ export default function AdminCandidates() {
                 </div>
             </div>
 
-            {/* Add Candidate Modal */}
+            {/* Add/Edit Candidate Modal */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsAddModalOpen(false)} />
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10 animate-in zoom-in-95 duration-200">
                         <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-20">
-                            <h2 className="text-xl font-bold text-gray-900">Add New Candidate</h2>
+                            <h2 className="text-xl font-bold text-gray-900">{editingId ? 'Edit Candidate' : 'Add New Candidate'}</h2>
                             <button onClick={() => setIsAddModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-5 h-5" /></button>
                         </div>
 
@@ -207,6 +266,22 @@ export default function AdminCandidates() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Education</label>
                                     <input required type="text" className="w-full p-3 rounded-lg border border-gray-200"
                                         value={formData.education} onChange={e => setFormData({ ...formData, education: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                                    <input required type="url" className="w-full p-3 rounded-lg border border-gray-200"
+                                        value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Alliance</label>
+                                    <select className="w-full p-3 rounded-lg border border-gray-200 bg-white"
+                                        value={formData.alliance} onChange={e => setFormData({ ...formData, alliance: e.target.value })}>
+                                        <option value="">None</option>
+                                        <option value="bal">Awami League</option>
+                                        <option value="bnp">BNP</option>
+                                        <option value="jp">Jatiya Party</option>
+                                        <option value="jamaat">Jamaat</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -271,7 +346,7 @@ export default function AdminCandidates() {
                                     className="px-6 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 shadow-sm transition-colors flex items-center gap-2"
                                 >
                                     <Save className="w-4 h-4" />
-                                    Save Candidate
+                                    {editingId ? 'Update Candidate' : 'Save Candidate'}
                                 </button>
                             </div>
                         </form>

@@ -161,9 +161,22 @@ export async function addCandidate(candidateData: any) {
     }
 }
 
-export async function updateCandidate(_id: number, _candidateData: any) {
-    // Basic update logic placeholder
-    return { success: false, message: "Update not implemented yet" };
+export async function updateCandidate(id: number, candidateData: any) {
+    const { name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area, alliance } = candidateData;
+    try {
+        await db.execute({
+            sql: `UPDATE candidates SET 
+                  name = ?, name_bn = ?, party = ?, party_bn = ?, symbol = ?, image_url = ?, 
+                  manifesto = ?, manifesto_bn = ?, education = ?, experience = ?, age = ?, 
+                  status = ?, division = ?, district = ?, area = ?, alliance = ?
+                  WHERE id = ?`,
+            args: [name, name_bn, party, party_bn, symbol, image_url, manifesto, manifesto_bn, education, experience, age, status, division, district, area, alliance, id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Update candidate error:", error);
+        return { success: false, error };
+    }
 }
 
 export async function deleteCandidate(id: number) {
@@ -231,8 +244,22 @@ export async function addVoteCenter(centerData: any) {
     }
 }
 
-export async function updateVoteCenter(_id: number, _centerData: any) {
-    return { success: false, message: "Update not implemented yet" };
+export async function updateVoteCenter(id: number, centerData: any) {
+    const { name, name_bn, address, address_bn, division, district, area, latitude, longitude, capacity } = centerData;
+    try {
+        await db.execute({
+            sql: `UPDATE vote_centers SET 
+                  name = ?, name_bn = ?, address = ?, address_bn = ?, 
+                  division = ?, district = ?, area = ?, 
+                  latitude = ?, longitude = ?, capacity = ?
+                  WHERE id = ?`,
+            args: [name, name_bn, address, address_bn, division, district, area, latitude, longitude, capacity, id]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Update center error:", error);
+        return { success: false, error };
+    }
 }
 
 export async function deleteVoteCenter(id: number) {
