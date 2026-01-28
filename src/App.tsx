@@ -44,7 +44,7 @@ import ElectionUpdates from './pages/ElectionUpdates';
 import Course from './pages/Course';
 import CompareCandidates from './pages/CompareCandidates';
 import RumorCheck from './pages/RumorCheck';
-import Creator from './pages/Creator';
+import Creator from './lib/Copyright';
 
 import { useEffect } from 'react';
 import { checkConnection } from './lib/db';
