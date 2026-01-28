@@ -278,7 +278,7 @@ export const translations = {
                 candidateList: "জনমত জরিপ ২০২৬",
                 rumor: "গুজব যাচাই",
                 tutorials: "ভিডিও টিউটোরিয়াল",
-                badge: "সিভিক হিরো ব্যাজ নিন"
+                badge: "সচেতন নাগরিক ব্যাজ"
             }
         },
         eligibility: {
@@ -390,7 +390,7 @@ export const translations = {
             welcome: "স্বাগতম",
             subtitle: "নাগরিক সম্পৃক্ততা, শিক্ষা এবং পুরস্কারের জন্য আপনার কেন্দ্র।",
             tabs: {
-                dashboard: "সিভিক হিরো",
+                dashboard: "সচেতন নাগরিক",
                 rights: "ভোটারের অধিকার",
                 responsibilities: "দায়িত্বসমূহ",
                 nid: "এনআইডি পান",
