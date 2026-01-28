@@ -17,21 +17,21 @@ export default function QuickLinks() {
     ];
 
     return (
-        <div className="h-full flex flex-col justify-center gap-4 p-4">
+        <div className="h-full flex flex-col justify-center gap-2 p-4">
             {/* Ready to Vote Header - styled as a pill */}
-            <div className="w-full py-3.5 px-6 rounded-full bg-white shadow-sm text-center mb-1">
+            <div className="w-full py-3 px-6 rounded-full bg-white shadow-sm text-center mb-1">
                 <h2 className="text-green-600 font-bold font-serif text-2xl italic">
                     {t.home.readyToVote}
                 </h2>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1">
                 {quickLinks.map((link, index) => {
                     return (
                         <Link
                             key={index}
                             to={link.path}
-                            className="block w-full py-3.5 px-6 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all text-center group"
+                            className="block w-full py-3 px-6 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all text-center group"
                         >
                             <span className="font-bold text-gray-600 text-lg group-hover:text-green-700 font-serif">
                                 {link.label}
