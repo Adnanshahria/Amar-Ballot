@@ -17,7 +17,7 @@ export default function ElectionUpdates() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
+        <div className="min-h-screen bg-gray-50 pt-20 md:pt-24 pb-12 px-4">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">

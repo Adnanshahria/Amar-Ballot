@@ -23,7 +23,7 @@ export default function Course() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
+        <div className="min-h-screen bg-gray-50 pt-20 md:pt-24 pb-12 px-4">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

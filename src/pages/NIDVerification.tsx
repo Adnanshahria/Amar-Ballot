@@ -121,7 +121,7 @@ export default function NIDVerification() {
 
     return (
         <main className="flex-1 w-full px-4 py-8 flex flex-col items-center justify-center min-h-[80vh]">
-            <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-green-100 p-8 animate-in fade-in zoom-in duration-500">
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-green-100 p-5 md:p-8 animate-in fade-in zoom-in duration-500">
                 <div className="text-center mb-8">
                     <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Shield className="w-8 h-8 text-green-600" />

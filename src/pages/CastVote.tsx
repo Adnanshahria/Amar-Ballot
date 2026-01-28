@@ -91,7 +91,7 @@ export default function CastVote() {
                     </p>
                 </div>
 
-                <div className="p-6 md:p-8 space-y-8">
+                <div className="p-4 md:p-8 space-y-8">
                     {/* Party Selection Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {PARTIES.map((party) => {
