@@ -1,6 +1,5 @@
 import { BarChart3, MessageSquare, Download, Filter, RefreshCcw, Clock, ArrowUpDown } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { getVoteStats, getReviews } from '../lib/api';
 import { SEAT_SYSTEM } from '../lib/seats';
 import { toPng } from 'html-to-image';

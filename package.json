@@ -13,7 +13,9 @@
   "dependencies": {
     "@libsql/client": "^0.17.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@types/canvas-confetti": "^1.9.0",
     "bcryptjs": "^3.0.3",
+    "canvas-confetti": "^1.9.4",
     "dotenv": "^17.2.3",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
