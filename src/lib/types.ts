@@ -32,3 +32,72 @@ export interface VoteCenter {
     longitude?: number;
     capacity?: number;
 }
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    phone?: string;
+    role: 'admin' | 'user';
+    verification_status: 'unverified' | 'verified';
+    nid_number?: string;
+    voter_area?: string;
+    division?: string; // Location data for authenticated voting
+    district?: string;
+    seat_no?: string;
+    date_of_birth?: string;
+}
+
+export interface ElectionUpdate {
+    id: number;
+    title: string;
+    content: string;
+    image_url?: string;
+    published_at: string;
+}
+
+export interface Rumor {
+    id: number;
+    title: string;
+    description: string;
+    status: 'debunked' | 'verified' | 'pending';
+    source?: string;
+    image_url?: string;
+    published_at: string;
+}
+
+export interface Incident {
+    id: number;
+    type: string;
+    location: string;
+    description: string;
+    status: 'pending' | 'reviewed' | 'resolved';
+    created_at: string;
+}
+
+export interface Volunteer {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    role: string;
+    status: 'pending' | 'approved' | 'rejected';
+    created_at: string;
+}
+
+export interface Review {
+    alliance_id: string;
+    review: string;
+    user_name: string; // Masked or full
+    created_at: string;
+    seat_no: string;
+}
+
+export interface Message {
+    id: number;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    created_at: string;
+}

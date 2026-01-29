@@ -1,5 +1,5 @@
 import { db } from './db';
-import type { Candidate, VoteCenter } from './types';
+import type { Candidate, VoteCenter, User, ElectionUpdate, Rumor, Review, Incident, Volunteer } from './types';
 import bcrypt from 'bcryptjs';
 
 export async function getCandidates(): Promise<Candidate[]> {
@@ -123,7 +123,26 @@ export async function loginUser(credentials: any) {
 
         const user = result.rows[0];
         // Compare with hashed password
-        const isValid = await bcrypt.compare(password, user.password_hash as string);
+        let isValid = await bcrypt.compare(password, user.password_hash as string);
+
+        // --- LAZY MIGRATION START ---
+        // If hash fails, check if it's a legacy plain-text password
+        if (!isValid && password === user.password_hash) {
+            console.log("Migrating legacy plain-text password for user:", user.email);
+            // 1. Hash the password
+            const salt = await bcrypt.genSalt(10);
+            const newHash = await bcrypt.hash(password, salt);
+
+            // 2. Update DB
+            await db.execute({
+                sql: 'UPDATE users SET password_hash = ? WHERE id = ?',
+                args: [newHash, user.id]
+            });
+
+            // 3. Mark as valid and use the new hash for this session logic if needed (though we just proceed)
+            isValid = true;
+        }
+        // --- LAZY MIGRATION END ---
 
         if (!isValid) return { success: false, message: "Invalid password" };
 
@@ -160,6 +179,22 @@ export async function verifyUser(userId: number, nidData: any) {
     } catch (error) {
         console.error("Verification error:", error);
         return { success: false, error };
+
+    }
+}
+
+export async function verifyAdmin(userId: number): Promise<boolean> {
+    try {
+        const result = await db.execute({
+            sql: 'SELECT role FROM users WHERE id = ?',
+            args: [userId]
+        });
+
+        if (result.rows.length === 0) return false;
+        return result.rows[0].role === 'admin';
+    } catch (error) {
+        console.error("Admin verification error:", error);
+        return false;
     }
 }
 
@@ -234,19 +269,22 @@ export async function deleteCandidate(id: number) {
 
 // --- USERS MANAGEMENT ---
 
-export async function getUsers() {
+export async function getUsers(): Promise<User[]> {
     try {
         const result = await db.execute('SELECT * FROM users ORDER BY created_at DESC');
         return result.rows.map(row => ({
-            id: row.id,
-            name: row.full_name,
-            email: row.email,
-            phone: row.phone_number,
-            role: row.role,
-            verification_status: row.verification_status,
-            nid_number: row.nid_number,
-            voter_area: row.voter_area,
-            date_of_birth: row.date_of_birth
+            id: row.id as number,
+            name: row.full_name as string,
+            email: row.email as string,
+            phone: row.phone_number as string,
+            role: row.role as 'admin' | 'user',
+            verification_status: row.verification_status as 'unverified' | 'verified',
+            nid_number: row.nid_number as string,
+            voter_area: row.voter_area as string,
+            division: row.division as string,
+            district: row.district as string,
+            seat_no: row.seat_no as string,
+            date_of_birth: row.date_of_birth as string
         }));
     } catch (error) {
         console.error("Error fetching users:", error);
@@ -317,15 +355,15 @@ export async function deleteVoteCenter(id: number) {
 
 // --- ELECTION UPDATES MANAGEMENT ---
 
-export async function getUpdates() {
+export async function getUpdates(): Promise<ElectionUpdate[]> {
     try {
         const result = await db.execute('SELECT * FROM election_updates ORDER BY published_at DESC');
         return result.rows.map(row => ({
-            id: row.id,
-            title: row.title,
-            content: row.content,
-            image_url: row.image_url,
-            published_at: row.published_at
+            id: row.id as number,
+            title: row.title as string,
+            content: row.content as string,
+            image_url: row.image_url as string,
+            published_at: row.published_at as string
         }));
     } catch (error) {
         console.error("Error fetching updates:", error);
@@ -333,12 +371,13 @@ export async function getUpdates() {
     }
 }
 
-export async function addUpdate(updateData: any) {
+
+export async function addUpdate(updateData: Omit<ElectionUpdate, 'id' | 'published_at'>) {
     const { title, content, image_url } = updateData;
     try {
         await db.execute({
             sql: `INSERT INTO election_updates (title, content, image_url) VALUES (?, ?, ?)`,
-            args: [title, content, image_url || null]
+            args: [title, content, image_url || null] as any[] // Explicit cast to allow null
         });
         return { success: true };
     } catch (error) {
@@ -362,16 +401,28 @@ export async function deleteUpdate(id: number) {
 
 // --- RUMORS MANAGEMENT ---
 
-export async function getRumors() {
+export async function getRumors(searchQuery?: string): Promise<Rumor[]> {
     try {
-        const result = await db.execute('SELECT * FROM rumors ORDER BY published_at DESC');
+        let sql = 'SELECT * FROM rumors';
+        let args: any[] = [];
+
+        if (searchQuery) {
+            sql += ' WHERE title LIKE ? OR description LIKE ?';
+            const term = `%${searchQuery}%`;
+            args.push(term, term);
+        }
+
+        sql += ' ORDER BY published_at DESC';
+
+        const result = await db.execute({ sql, args });
         return result.rows.map(row => ({
-            id: row.id,
-            title: row.title,
-            description: row.description,
-            status: row.status,
-            source: row.source,
-            published_at: row.published_at
+            id: row.id as number,
+            title: row.title as string,
+            description: row.description as string,
+            status: row.status as 'debunked' | 'verified' | 'pending',
+            source: row.source as string,
+            image_url: row.image_url as string,
+            published_at: row.published_at as string
         }));
     } catch (error) {
         console.error("Error fetching rumors:", error);
@@ -379,16 +430,30 @@ export async function getRumors() {
     }
 }
 
-export async function addRumor(rumorData: any) {
-    const { title, description, status, source } = rumorData;
+export async function addRumor(rumorData: Omit<Rumor, 'id' | 'published_at'>) {
+    const { title, description, status, source, image_url } = rumorData;
     try {
         await db.execute({
-            sql: `INSERT INTO rumors (title, description, status, source) VALUES (?, ?, ?, ?)`,
-            args: [title, description, status, source]
+            sql: `INSERT INTO rumors (title, description, status, source, image_url) VALUES (?, ?, ?, ?, ?)`,
+            args: [title, description, status, source || null, image_url || null]
         });
         return { success: true };
     } catch (error) {
         console.error("Add rumor error:", error);
+        return { success: false, error };
+    }
+}
+
+export async function updateRumor(id: number, rumorData: Partial<Rumor>) {
+    const { title, description, status, source, image_url } = rumorData;
+    try {
+        await db.execute({
+            sql: `UPDATE rumors SET title = ?, description = ?, status = ?, source = ?, image_url = ? WHERE id = ?`,
+            args: [title, description, status, source || null, image_url || null, id] as any[]
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Update rumor error:", error);
         return { success: false, error };
     }
 }
@@ -520,7 +585,7 @@ interface ReviewFilters {
     division?: string;
 }
 
-export async function getReviews(filters: ReviewFilters) {
+export async function getReviews(filters: ReviewFilters): Promise<{ success: boolean; reviews: Review[] }> {
     try {
         let whereClause = "WHERE user_review IS NOT NULL AND user_review != ''";
         let args: any[] = [];
@@ -551,7 +616,7 @@ export async function getReviews(filters: ReviewFilters) {
                 alliance_id: row.alliance_id as string,
                 review: row.user_review as string,
                 user_name: row.user_name as string,
-                created_at: row.created_at,
+                created_at: row.created_at as string,
                 seat_no: row.seat_no as string
             }))
         };
@@ -561,12 +626,14 @@ export async function getReviews(filters: ReviewFilters) {
     }
 }
 
+
+// --- CONTACT & INCIDENTS ---
+
 // --- CONTACT & INCIDENTS ---
 
 export async function submitContactMessage(data: any) {
     const { name, email, subject, message } = data;
     try {
-        // Ideally save to a 'messages' table
         await db.execute({
             sql: `INSERT INTO messages (name, email, subject, message, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
             args: [name, email, subject, message]
@@ -574,12 +641,11 @@ export async function submitContactMessage(data: any) {
         return { success: true };
     } catch (error) {
         console.error("Contact message error:", error);
-        // Fallback for demo if table doesn't exist
-        return { success: true, message: "Message sent (mock)" };
+        return { success: false, error };
     }
 }
 
-export async function submitIncidentReport(data: any) {
+export async function submitIncidentReport(data: Omit<Incident, 'id' | 'status' | 'created_at'>) {
     const { type, location, description } = data;
     try {
         await db.execute({
@@ -589,11 +655,11 @@ export async function submitIncidentReport(data: any) {
         return { success: true };
     } catch (error) {
         console.error("Incident report error:", error);
-        return { success: true, message: "Report submitted (mock)" };
+        return { success: false, error };
     }
 }
 
-export async function submitVolunteerSignup(data: any) {
+export async function submitVolunteerSignup(data: Omit<Volunteer, 'id' | 'status' | 'created_at'>) {
     const { name, email, phone, role } = data;
     try {
         await db.execute({
@@ -603,6 +669,96 @@ export async function submitVolunteerSignup(data: any) {
         return { success: true };
     } catch (error) {
         console.error("Volunteer signup error:", error);
-        return { success: true, message: "Signup successful (mock)" };
+        return { success: false, error };
+    }
+}
+
+export async function fixDatabaseSchema() {
+    try {
+        // 1. Check if we need to migrate the table structure for new status values
+        // We do this by trying to insert a 'pending' status. If it fails, we know we need to migrate.
+        // OR simpler: just check if the Image URL column exists, if not add it.
+        // But the user has a CHECK constraint issue.
+
+        // Let's migrate the table to support new statuses: 'debunked', 'verified', 'pending'
+        // SQLite doesn't support changing CHECK constraints easily. We must:
+        // 1. Rename old table
+        // 2. Create new table
+        // 3. Copy data
+        // 4. Drop old table
+
+        console.log("Starting schema update...");
+
+        // Enable foreign keys just in case
+        await db.execute("PRAGMA foreign_keys=OFF");
+
+        // Transaction for safety
+        await db.execute("BEGIN TRANSACTION");
+
+        try {
+            // 1. Check if we already migrated (check if we can insert a dummy pending rumor, or check table info)
+            // Ideally we'd query table info, but let's just do the migration if we haven't 'marked' it.
+            // For now, let's assume if the user hits "Fix Schema" they want this.
+
+            // Rename current table
+            // We use 'rumors_old' as backup. If it exists, drop it first from previous failed attempts
+            await db.execute("DROP TABLE IF EXISTS rumors_old");
+            await db.execute("ALTER TABLE rumors RENAME TO rumors_old");
+
+            // 2. Create new table with updated constraints
+            await db.execute(`
+                CREATE TABLE rumors (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    status TEXT NOT NULL CHECK(status IN ('debunked', 'verified', 'pending', 'fake')), -- Keeping 'fake' for legacy compatibility, 'debunked' is new preferred
+                    source TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    image_url TEXT
+                )
+            `);
+
+            // 3. Copy data from rumors_old to new rumors
+            // We map 'fake' to 'debunked' if desired, or keep it. Let's keep it 'fake' if that's what it was, or map it.
+            // The user wants 'debunked' in UI, so let's migrate data: 'fake' -> 'debunked'
+            await db.execute(`
+                INSERT INTO rumors (id, title, description, status, source, created_at, published_at, image_url)
+                SELECT 
+                    id, 
+                    title, 
+                    description, 
+                    CASE WHEN status = 'fake' THEN 'debunked' ELSE status END, 
+                    source, 
+                    created_at, 
+                    published_at, 
+                    image_url
+                FROM rumors_old
+            `);
+
+            // 4. Drop old table
+            await db.execute("DROP TABLE rumors_old");
+
+            await db.execute("COMMIT");
+            await db.execute("PRAGMA foreign_keys=ON");
+
+            console.log("Schema migration completed successfully.");
+            return { success: true, message: "Schema updated. 'fake' status migrated to 'debunked'." };
+
+        } catch (innerError) {
+            await db.execute("ROLLBACK");
+            await db.execute("PRAGMA foreign_keys=ON");
+            // If rollback happens, maybe we failed because table didn't exist or something.
+            // Try to recover: if rumors doesn't exist but rumors_old does, rename back.
+            try {
+                await db.execute("ALTER TABLE rumors_old RENAME TO rumors");
+            } catch (e) { /* ignore */ }
+
+            throw innerError;
+        }
+
+    } catch (error: any) {
+        console.error("Schema update error:", error);
+        return { success: false, error: error.message };
     }
 }

@@ -1,18 +1,49 @@
-// import { Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { verifyAdmin } from '../lib/api';
 import AdminLogin from './AdminLogin';
 import AdminLayout from './AdminLayout';
 
 export default function AdminRoute() {
-    const { user, isLoggedIn } = useAuth();
+    const { user, isLoggedIn, logout } = useAuth();
+    const [isVerified, setIsVerified] = useState<boolean | null>(null);
 
-    // If logged in AND role is admin, show the content wrapped in Layout
-    if (isLoggedIn && user?.role === 'admin') {
+    useEffect(() => {
+        const checkAdminStatus = async () => {
+            if (!isLoggedIn || !user?.id) {
+                setIsVerified(false);
+                return;
+            }
+
+            // Client-side quick check
+            if (user.role !== 'admin') {
+                setIsVerified(false);
+                return;
+            }
+
+            // Database strict check
+            const isValid = await verifyAdmin(user.id);
+            if (!isValid) {
+                // If DB says not admin, but local says admin, force logout
+                logout();
+            }
+            setIsVerified(isValid);
+        };
+
+        checkAdminStatus();
+    }, [isLoggedIn, user, logout]);
+
+    if (isVerified === null) {
         return (
-            <AdminLayout />
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-700"></div>
+            </div>
         );
     }
 
-    // Otherwise, show the Verification Popup Login
+    if (isVerified) {
+        return <AdminLayout />;
+    }
+
     return <AdminLogin />;
 }

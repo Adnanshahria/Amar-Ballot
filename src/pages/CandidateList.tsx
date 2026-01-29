@@ -1,4 +1,5 @@
 import { BarChart3, MessageSquare, Download, Filter, RefreshCcw, Clock, ArrowUpDown } from 'lucide-react';
+import CustomSelect from '../components/CustomSelect';
 import { useState, useEffect, useRef } from 'react';
 import { getVoteStats, getReviews } from '../lib/api';
 import { SEAT_SYSTEM } from '../lib/seats';
@@ -187,7 +188,7 @@ export default function CandidateList() {
             <div className="w-full max-w-6xl flex flex-col gap-6 relative z-10">
 
                 {/* --- HEADER & FILTERS --- */}
-                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-4 md:p-6 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
+                <div className="relative z-30 bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-4 md:p-6 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
                     <div>
                         <h1 className="text-2xl md:text-3xl text-green-900 font-serif font-bold flex items-center gap-3">
                             <BarChart3 className="w-8 h-8 text-green-600" />
@@ -199,41 +200,43 @@ export default function CandidateList() {
                     <div className="flex flex-wrap items-center gap-3 bg-green-50/50 p-2 rounded-xl border border-green-100">
                         <Filter className="w-5 h-5 text-green-600 ml-2" />
 
-                        <select
-                            value={selectedDivision}
-                            onChange={(e) => {
-                                setSelectedDivision(e.target.value);
-                                setSelectedDistrict('');
-                                setSelectedArea('');
-                            }}
-                            className="bg-white border border-green-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5 min-w-[140px]"
-                        >
-                            <option value="">{t.filters.division}</option>
-                            {divisions.map(div => <option key={div} value={div}>{div}</option>)}
-                        </select>
+                        <div className="w-[200px]">
+                            <CustomSelect
+                                label={t.filters.division}
+                                value={selectedDivision}
+                                onChange={(val) => {
+                                    setSelectedDivision(val);
+                                    setSelectedDistrict('');
+                                    setSelectedArea('');
+                                }}
+                                options={divisions}
+                                placeholder={t.filters.division}
+                            />
+                        </div>
 
-                        <select
-                            value={selectedDistrict}
-                            onChange={(e) => {
-                                setSelectedDistrict(e.target.value);
-                                setSelectedArea('');
-                            }}
-                            disabled={!selectedDivision}
-                            className="bg-white border border-green-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5 min-w-[140px] disabled:opacity-50 disabled:bg-gray-100"
-                        >
-                            <option value="">{t.filters.district}</option>
-                            {districts.map(dist => <option key={dist} value={dist}>{dist}</option>)}
-                        </select>
+                        <div className="w-[200px]">
+                            <CustomSelect
+                                label={t.filters.district}
+                                value={selectedDistrict}
+                                onChange={(val) => {
+                                    setSelectedDistrict(val);
+                                    setSelectedArea('');
+                                }}
+                                options={districts}
+                                placeholder={t.filters.district}
+                            // disabled={!selectedDivision} // CustomSelect doesn't support disabled styling yet, but logic handles empty options
+                            />
+                        </div>
 
-                        <select
-                            value={selectedArea}
-                            onChange={(e) => setSelectedArea(e.target.value)}
-                            disabled={!selectedDistrict}
-                            className="bg-white border border-green-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5 min-w-[140px] disabled:opacity-50 disabled:bg-gray-100"
-                        >
-                            <option value="">{t.filters.area}</option>
-                            {areas.map(area => <option key={area} value={area}>{area}</option>)}
-                        </select>
+                        <div className="w-[200px]">
+                            <CustomSelect
+                                label={t.filters.area}
+                                value={selectedArea}
+                                onChange={(val) => setSelectedArea(val)}
+                                options={areas}
+                                placeholder={t.filters.area}
+                            />
+                        </div>
 
                         {(selectedDivision || selectedDistrict || selectedArea) && (
                             <button

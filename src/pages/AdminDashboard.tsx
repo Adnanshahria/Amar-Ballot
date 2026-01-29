@@ -21,9 +21,22 @@ export default function AdminDashboard() {
 
     return (
         <div>
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-                <p className="text-gray-600 mt-1">Welcome back, {user?.name}</p>
+            <div className="mb-8 flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+                    <p className="text-gray-600 mt-1">Welcome back, {user?.name}</p>
+                </div>
+                <button
+                    onClick={async () => {
+                        const { fixDatabaseSchema } = await import('../lib/api');
+                        const result = await fixDatabaseSchema();
+                        if (result.success) alert(result.message);
+                        else alert("Update failed: " + JSON.stringify(result.error));
+                    }}
+                    className="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded"
+                >
+                    Fix DB Schema
+                </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -94,6 +107,20 @@ export default function AdminDashboard() {
                     </div>
                     <div className="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
                         <ShieldAlert className="w-7 h-7 text-red-600 group-hover:text-white" />
+                    </div>
+                </div>
+
+                {/* Incidents Card */}
+                <div
+                    onClick={() => navigate('/adm/incidents')}
+                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow cursor-pointer group"
+                >
+                    <div>
+                        <p className="text-sm font-medium text-gray-500 mb-1 group-hover:text-orange-600 transition-colors">Incident Reports</p>
+                        <h3 className="text-xl font-bold text-gray-900">Safety Reports</h3>
+                    </div>
+                    <div className="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+                        <ShieldAlert className="w-7 h-7 text-orange-600 group-hover:text-white" />
                     </div>
                 </div>
             </div>

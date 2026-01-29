@@ -9,6 +9,7 @@ import AdminCandidates from './pages/AdminCandidates';
 import AdminCenters from './pages/AdminCenters';
 import AdminUpdates from './pages/AdminUpdates';
 import AdminRumors from './pages/AdminRumors';
+import AdminIncidents from './pages/AdminIncidents';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import VoteCenter from './pages/VoteCenter';
@@ -21,6 +22,7 @@ import VideoTutorials from './pages/VideoTutorials';
 import AboutUs from './pages/AboutUs';
 import Services from './pages/Services';
 import ContactUs from './pages/ContactUs';
+import ReportIncident from './pages/ReportIncident';
 // import CandidateDetails from './pages/CandidateDetails';
 // import VoterGuide from './pages/VoterGuide';
 // import FAQ from './pages/FAQ';
@@ -30,13 +32,9 @@ import ContactUs from './pages/ContactUs';
 // import Volunteer from './pages/Volunteer';
 // import PressKit from './pages/PressKit';
 // import Accessibility from './pages/Accessibility';
-// import ReportIncident from './pages/ReportIncident';
-// import ObserverInfo from './pages/ObserverInfo';
-// import PastResults from './pages/PastResults';
-// import ElectionUpdates from './pages/ElectionUpdates';
-// import Course from './pages/Course';
+import ObserverInfo from './pages/ObserverInfo';
+import PastResults from './pages/PastResults';
 // import CompareCandidates from './pages/CompareCandidates';
-// import RumorCheck from './pages/RumorCheck';
 import CivicBadge from './pages/CivicBadge';
 import Placeholder from './pages/Placeholder';
 import NavigationMap from './components/NavigationMap';
@@ -95,6 +93,7 @@ function App() {
                 <Route path="centers" element={<AdminCenters />} />
                 <Route path="updates" element={<AdminUpdates />} />
                 <Route path="rumors" element={<AdminRumors />} />
+                <Route path="incidents" element={<AdminIncidents />} />
               </Route>
 
               {/* New Pages */}
@@ -106,10 +105,10 @@ function App() {
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/volunteer" element={<Volunteer />} />
               <Route path="/press" element={<PressKit />} />
-              <Route path="/accessibility" element={<Accessibility />} />
+              <Route path="/accessibility" element={<Accessibility />} /> */}
               <Route path="/report" element={<ReportIncident />} />
               <Route path="/observers" element={<ObserverInfo />} />
-              <Route path="/archive" element={<PastResults />} /> */}
+              <Route path="/archive" element={<PastResults />} />
 
               {/* Menu Pages from Image */}
               <Route path="/election-updates" element={<ElectionUpdates />} />

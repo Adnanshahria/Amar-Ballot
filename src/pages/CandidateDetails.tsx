@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { translations } from '../data/translations';
+
 import { getCandidateById } from '../lib/api';
 import type { Candidate } from '../lib/types';
 import SEO from '../components/SEO';
-import { ChevronLeft, Award, BookOpen, Briefcase, MapPin, Phone, Mail, User, Calendar } from 'lucide-react';
+import { ChevronLeft, Award, BookOpen, Briefcase, MapPin } from 'lucide-react';
 
 export default function CandidateDetails() {
     const { id } = useParams();
     const { language } = useLanguage();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const t = translations[language];
+
 
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [loading, setLoading] = useState(true);
@@ -69,8 +68,8 @@ export default function CandidateDetails() {
                             </div>
                             <div className="flex flex-col items-center">
                                 <span className={`px-4 py-1 rounded-full text-sm font-bold border ${candidate.status === 'clean'
-                                        ? 'bg-green-50 text-green-700 border-green-200'
-                                        : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                    ? 'bg-green-50 text-green-700 border-green-200'
+                                    : 'bg-yellow-50 text-yellow-700 border-yellow-200'
                                     }`}>
                                     {candidate.status === 'clean' ? 'Clean Record' : 'Pending Review'}
                                 </span>

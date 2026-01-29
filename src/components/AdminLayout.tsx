@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     Users,
@@ -17,7 +17,6 @@ import { useAuth } from '../context/AuthContext';
 export default function AdminLayout() {
     const { logout, user } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -38,42 +37,41 @@ export default function AdminLayout() {
         <div className="min-h-screen bg-gray-50 flex">
             {/* Sidebar - Desktop */}
             <aside className="hidden lg:flex flex-col w-64 bg-slate-900 text-white fixed h-full z-30">
-                <div className="p-6 border-b border-slate-800">
+                <div className="p-6 border-b border-white/10">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center font-bold text-white">
+                        <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-red-500/20">
                             AB
                         </div>
                         <div>
-                            <h1 className="font-bold text-lg leading-none">Admin Panel</h1>
-                            <p className="text-xs text-slate-400 mt-1">Amar Ballot System</p>
+                            <h1 className="font-bold text-lg leading-none tracking-tight">Admin Panel</h1>
+                            <p className="text-xs text-slate-400 mt-1 font-medium">Amar Ballot System</p>
                         </div>
                     </div>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-                    {navigation.map((item) => {
-                        const isActive = item.href === '/adm'
-                            ? location.pathname === '/adm'
-                            : location.pathname.startsWith(item.href);
-
-                        return (
-                            <NavLink
-                                key={item.name}
-                                to={item.href}
-                                className={({ isActive: linkActive }) => `
-                                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
-                                    ${isActive || linkActive
-                                        ? 'bg-red-600 text-white shadow-lg shadow-red-900/20'
-                                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                                    }
+                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                    {navigation.map((item) => (
+                        <NavLink
+                            key={item.name}
+                            to={item.href}
+                            end={item.href === '/adm'}
+                            className={({ isActive }) => `
+                                    flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group relative overflow-hidden border
+                                    ${isActive
+                                    ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.15)]'
+                                    : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white'
+                                }
                                 `}
-                            >
-                                <item.icon className="w-5 h-5" />
-                                <span className="font-medium">{item.name}</span>
-                                {(isActive) && <ChevronRight className="w-4 h-4 ml-auto" />}
-                            </NavLink>
-                        );
-                    })}
+                        >
+                            {({ isActive }) => (
+                                <>
+                                    <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-red-500' : 'text-slate-400 group-hover:text-white'}`} />
+                                    <span className="font-medium">{item.name}</span>
+                                    {isActive && <ChevronRight className="w-4 h-4 ml-auto opacity-75 text-red-500" />}
+                                </>
+                            )}
+                        </NavLink>
+                    ))}
                 </nav>
 
                 <div className="p-4 border-t border-slate-800">
