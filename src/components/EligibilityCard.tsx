@@ -56,7 +56,17 @@ export default function EligibilityCard() {
                 </div>
             </div>
 
-            <button className="w-full py-2 rounded-lg font-semibold bg-green-400 text-green-900 hover:bg-green-500 transition-all">
+            <button
+                onClick={() => {
+                    const allChecked = eligibilityItems.every(item => checked[item.id]);
+                    if (allChecked) {
+                        window.location.href = '/nid-verification';
+                    } else {
+                        alert("Please confirm all eligibility criteria.");
+                    }
+                }}
+                className="w-full py-2 rounded-lg font-semibold bg-green-400 text-green-900 hover:bg-green-500 transition-all"
+            >
                 {t.eligibility.resultBtn}
             </button>
         </div>

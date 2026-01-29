@@ -1,104 +1,133 @@
-import { User, Phone, Mail, MapPin, Award, Calendar } from 'lucide-react';
-import preronaImg from '../assets/prerona.png';
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
+import { getCandidateById } from '../lib/api';
+import type { Candidate } from '../lib/types';
+import SEO from '../components/SEO';
+import { ChevronLeft, Award, BookOpen, Briefcase, MapPin, Phone, Mail, User, Calendar } from 'lucide-react';
 
 export default function CandidateDetails() {
+    const { id } = useParams();
+    const { language } = useLanguage();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const t = translations[language];
+
+    const [candidate, setCandidate] = useState<Candidate | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchCandidate() {
+            if (!id) return;
+            const data = await getCandidateById(Number(id));
+            setCandidate(data);
+            setLoading(false);
+        }
+        fetchCandidate();
+    }, [id]);
+
+    if (loading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    }
+
+    if (!candidate) {
+        return <div className="min-h-screen flex items-center justify-center">Candidate not found</div>;
+    }
+
+    const name = language === 'bn' ? candidate.name_bn : candidate.name;
+    const party = language === 'bn' ? candidate.party_bn : candidate.party;
+    const manifesto = language === 'bn' ? candidate.manifesto_bn : candidate.manifesto;
+
     return (
-        <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 relative flex flex-col items-center justify-start min-h-[80vh]">
-            <div className="w-full max-w-4xl bg-white/80 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden relative z-10 border border-green-100">
+        <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 bg-gray-50 min-h-screen">
+            <SEO title={name} description={`Details for ${name} - ${party}`} />
 
-                {/* Header Banner */}
-                <div className="h-32 bg-gradient-to-r from-green-600 to-green-800 relative">
-                    <div className="absolute -bottom-16 left-8">
-                        <img
-                            src={preronaImg}
-                            alt="Candidate"
-                            className="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-green-100 object-cover"
-                        />
-                    </div>
-                </div>
+            <div className="max-w-4xl mx-auto">
+                <Link to="/candidate-list" className="inline-flex items-center text-green-700 hover:text-green-800 mb-6 transition-colors">
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Back to List
+                </Link>
 
-                <div className="pt-20 px-8 pb-8">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h1 className="text-3xl font-serif font-bold text-green-900">Nargis Akter</h1>
-                            <p className="text-green-700 font-medium text-lg">Running for Member of Parliament</p>
-                            <p className="text-gray-500">Dhaka-10 Constituency</p>
-                        </div>
-                        <div className="bg-green-50 px-4 py-2 rounded-xl border border-green-200 text-center">
-                            <span className="block text-xs uppercase tracking-wider text-green-600 font-bold">Symbol</span>
-                            <span className="text-2xl">😺</span>
-                            <span className="block text-sm font-medium text-green-800">Cat</span>
-                        </div>
-                    </div>
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-green-100">
+                    <div className="bg-gradient-to-r from-green-800 to-green-600 h-32 relative"></div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                        {/* Biography */}
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800 mb-3 border-b border-green-200 pb-2">Biography</h2>
-                            <p className="text-gray-600 leading-relaxed mb-4">
-                                Nargis Akter is a dedicated community leader with over 15 years of experience in public service. She has worked tirelessly to improve education and healthcare in her constituency. Her vision is to create a sustainable and inclusive development model for all citizens.
-                            </p>
-
-                            <h2 className="text-xl font-bold text-gray-800 mb-3 border-b border-green-200 pb-2 mt-6">Key Manifesto Points</h2>
-                            <ul className="space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-500 mt-1">✓</span>
-                                    <span className="text-gray-700">Free healthcare for seniors</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-500 mt-1">✓</span>
-                                    <span className="text-gray-700">Modernization of local schools</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-green-500 mt-1">✓</span>
-                                    <span className="text-gray-700">Youth employment programs</span>
-                                </li>
-                            </ul>
+                    <div className="px-8 pb-8">
+                        <div className="relative -mt-16 mb-6 flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
+                            <img
+                                src={candidate.image_url}
+                                alt={name}
+                                className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover bg-gray-200"
+                            />
+                            <div className="flex-1">
+                                <h1 className="text-3xl font-serif font-bold text-gray-900">{name}</h1>
+                                <div className="flex items-center justify-center md:justify-start gap-2 text-green-700 font-medium mt-1">
+                                    <Award className="w-4 h-4" />
+                                    <span>{party}</span>
+                                    <span className="text-gray-300">|</span>
+                                    <span>Symbol: {candidate.symbol}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <span className={`px-4 py-1 rounded-full text-sm font-bold border ${candidate.status === 'clean'
+                                        ? 'bg-green-50 text-green-700 border-green-200'
+                                        : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                    }`}>
+                                    {candidate.status === 'clean' ? 'Clean Record' : 'Pending Review'}
+                                </span>
+                            </div>
                         </div>
 
-                        {/* Contact & Info */}
-                        <div className="space-y-6">
-                            <div className="bg-green-50 p-6 rounded-xl border border-green-100">
-                                <h3 className="text-lg font-bold text-green-900 mb-4">Contact Information</h3>
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3 text-gray-700">
-                                        <Phone className="w-5 h-5 text-green-600" />
-                                        <span>+880 1712 345678</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                            <div className="space-y-6">
+                                <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <Briefcase className="w-5 h-5 text-green-600" />
+                                        Experience & Education
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Education</label>
+                                            <p className="text-gray-800 font-medium">{candidate.education}</p>
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Experience</label>
+                                            <p className="text-gray-800 font-medium">{candidate.experience}</p>
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Age</label>
+                                            <p className="text-gray-800 font-medium">{candidate.age} Years</p>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-3 text-gray-700">
-                                        <Mail className="w-5 h-5 text-green-600" />
-                                        <span>contact@nargisakter.com</span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-gray-700">
-                                        <MapPin className="w-5 h-5 text-green-600" />
-                                        <span>123, Green Road, Dhaka</span>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-4">Constituency</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                                            <span className="text-gray-500 flex items-center gap-2"><MapPin className="w-4 h-4" /> Area</span>
+                                            <span className="font-medium text-gray-800">{candidate.area}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-gray-500 flex items-center gap-2"><MapPin className="w-4 h-4" /> District</span>
+                                            <span className="font-medium text-gray-800">{candidate.district}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                <h3 className="text-lg font-bold text-gray-800 mb-4">Personal Details</h3>
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                                        <span className="text-gray-500 flex items-center gap-2"><Award className="w-4 h-4" /> Education</span>
-                                        <span className="font-medium text-gray-800">Masters including Political Science</span>
-                                    </div>
-                                    <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                                        <span className="text-gray-500 flex items-center gap-2"><Calendar className="w-4 h-4" /> Age</span>
-                                        <span className="font-medium text-gray-800">45 Years</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-gray-500 flex items-center gap-2"><User className="w-4 h-4" /> Profession</span>
-                                        <span className="font-medium text-gray-800">Social Worker</span>
-                                    </div>
-                                </div>
+                            <div className="bg-green-50/50 p-6 rounded-xl border border-green-100">
+                                <h3 className="text-lg font-bold text-green-900 mb-4 flex items-center gap-2">
+                                    <BookOpen className="w-5 h-5 text-green-600" />
+                                    Election Manifesto
+                                </h3>
+                                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                                    {manifesto}
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* Background Faded Image */}
-            <div className="fixed inset-0 z-0 opacity-5 pointer-events-none bg-[url('/src/assets/nirbachon-bhaban.png')] bg-cover bg-center"></div>
         </main>
     );
 }

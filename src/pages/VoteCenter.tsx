@@ -13,12 +13,22 @@ export default function VoteCenter() {
     const [loading, setLoading] = useState(false);
 
     const handleLookup = async () => {
+        if (!nid) return;
         setLoading(true);
-        // In a real app we would search by NID. 
-        // Here we just fetch the first one from DB for demo.
-        const centers = await getVoteCenters();
-        if (centers.length > 0) {
-            setVoteCenter(centers[0]);
+        // Simulate backend search:
+        // In a real app, this would be: await api.getVoteCenterByNID(nid, dob);
+        // Here we use a deterministic "hash" of the NID to pick a center.
+        try {
+            const centers = await getVoteCenters();
+            if (centers.length > 0) {
+                // Simple hash: Sum of digits % count
+                // const index = nid.split('').reduce((a, b) => a + parseInt(b), 0) % centers.length;
+                // Or just random for now if NID is non-numeric
+                const index = Math.abs(nid.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % centers.length;
+                setVoteCenter(centers[index]);
+            }
+        } catch (error) {
+            console.error("Search failed", error);
         }
         setLoading(false);
     };

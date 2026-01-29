@@ -58,8 +58,12 @@ export default function DatePicker({ label, value, onChange }: DatePickerProps) 
     };
 
     const handleDateSelect = (date: Date) => {
-        // Format to YYYY-MM-DD for consistency with HTML date input
-        const formatted = date.toISOString().split('T')[0];
+        // Format to YYYY-MM-DD using local time to avoid timezone shifts
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const formatted = `${year}-${month}-${day}`;
+
         onChange(formatted);
         setSelectedDate(date);
         setIsOpen(false);

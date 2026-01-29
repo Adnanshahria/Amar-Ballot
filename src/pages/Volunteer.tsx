@@ -1,6 +1,28 @@
+import { useState } from 'react';
 import { Heart, Users, CalendarCheck } from 'lucide-react';
+import { submitVolunteerSignup } from '../lib/api';
 
 export default function Volunteer() {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        role: ''
+    });
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setStatus('loading');
+
+        const result = await submitVolunteerSignup(formData);
+        if (result.success) {
+            setStatus('success');
+            setFormData({ name: '', email: '', phone: '', role: '' });
+        } else {
+            setStatus('error');
+        }
+    };
     return (
         <main className="flex-1 w-full px-4 sm:px-8 lg:px-16 py-8 relative flex flex-col items-center justify-start min-h-[80vh]">
             <div className="w-full max-w-4xl relative z-10">
@@ -13,25 +35,66 @@ export default function Volunteer() {
                         <p className="text-gray-600 mt-2">Help us ensure a fair and transparent election process.</p>
                     </div>
 
-                    <form className="space-y-4 max-w-lg mx-auto">
+                    <form className="space-y-4 max-w-lg mx-auto" onSubmit={handleSubmit}>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                            <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none" placeholder="Enter your name" />
+                            <input
+                                type="text"
+                                required
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                                placeholder="Enter your name"
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                            <input type="tel" className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none" placeholder="+880..." />
+                            <input
+                                type="tel"
+                                required
+                                value={formData.phone}
+                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                                placeholder="+880..."
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email (Optional)</label>
+                            <input
+                                type="email"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                                placeholder="you@example.com"
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Area of Interest</label>
-                            <select className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none">
+                            <select
+                                required
+                                value={formData.role}
+                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none"
+                            >
+                                <option value="">Select Role...</option>
                                 <option>Polling Station Support</option>
                                 <option>Voter Education</option>
                                 <option>Social Media Campaign</option>
                             </select>
                         </div>
-                        <button className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors shadow-md mt-4">
-                            Sign Up to Volunteer
+
+                        {status === 'success' && (
+                            <div className="p-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium border border-green-200">
+                                Signup successful! We will contact you soon.
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={status === 'loading'}
+                            className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors shadow-md mt-4 disabled:opacity-50"
+                        >
+                            {status === 'loading' ? 'Signing Up...' : 'Sign Up to Volunteer'}
                         </button>
                     </form>
 
